@@ -1,0 +1,21 @@
+.login-form {
+    position:absolute;
+    width:150px;
+    top:50%;
+    right:0;
+    left:50%;
+    margin: -50px 0 0 -150px;
+}
+
+#inpt_username {
+    width: 150px;
+}
+
+#inpt_password {
+    width: 150px;
+}
+
+#btn_login {
+    display: block; 
+    margin: 0 auto;
+}
