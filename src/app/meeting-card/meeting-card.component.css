@@ -1,0 +1,25 @@
+#date_day {
+    text-align: right;
+    font-size: 40px;
+}
+
+#date_month {
+    margin-top: 10px;
+    margin-left: -20px;
+    text-align: left;
+}
+
+#date_time {
+    margin: auto;
+    margin-right: 60px;
+    margin-top: -15px;
+}
+
+.meeting-card {
+    max-width: 50rem
+}
+
+.meeting-action-btn{
+    width: 100px;
+    margin-bottom: 10px;
+}

@@ -1,0 +1,31 @@
+<div class="card text-white bg-primary mb-3 meeting-card">
+    <div class="card-body">
+      <div class="container">
+          <div class="row">
+              <div class="col-md-7">
+                  <h4 class="card-title">{{ meeting.title }}</h4>
+                  <p class="card-text">{{ meeting.description }}</p>
+              </div>
+              <div class="col-md-3">
+                <div class="container">
+                        <div class="row">
+                            <div class="col-md-6">
+                                    <p id="date_day">{{ meeting.date | date:"dd"}}</p>
+                            </div>
+                            <div class="col-md-6">
+                                    <p id="date_month">{{ meeting.date | date:"MMM" | uppercase }}</p>
+                            </div>
+                            <p id="date_time">{{ meeting.date | date:"hh:mm a"}}</p>
+
+                        </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-success meeting-action-btn">Start</button>
+                <button type="button" class="btn btn-secondary meeting-action-btn">Edit</button>
+            </div>
+             
+            </div>
+      </div>
+    </div>
+  </div>
