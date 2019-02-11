@@ -1,2 +1,13 @@
 /* You can add global styles to this file, and also import other style files */
-@import "~ng-pick-datetime/assets/style/picker.min.css"
+@import "~ng-pick-datetime/assets/style/picker.min.css";
+@import "~ngx-smart-modal/ngx-smart-modal";
+@import "app/app.component";
+
+.nsm-dialog{
+    max-width: none !important;
+}
+
+
+.wide-modal {
+    width: 60%; 
+}

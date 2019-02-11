@@ -1,0 +1,8 @@
+.long-list{
+    overflow-y: scroll; 
+    height:600px;
+}
+
+#done_btn {
+    margin: 20px;
+}

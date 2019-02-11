@@ -1,3 +1,4 @@
-<p>
-  list-filter-select works!
-</p>
+<div class="long-list">
+    <ng2-smart-table (userRowSelect)="rowSelected($event)" [settings]="settings" [source] = "data"></ng2-smart-table>
+</div>
+<button type="button" id="done_btn" (click)="doneButtonClicked()" class="btn btn-primary">{{ doneButtonTitle }}</button>

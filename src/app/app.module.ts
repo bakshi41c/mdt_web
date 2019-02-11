@@ -3,6 +3,9 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FormsModule } from '@angular/forms';
+import { Ng2SmartTableModule } from 'ng2-smart-table';
+import { NgxSmartModalModule } from 'ngx-smart-modal';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -13,6 +16,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { CreateMeetingPageComponent } from './create-meeting-page/create-meeting-page.component';
 import { ListFilterSelectComponent } from './list-filter-select/list-filter-select.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
 
 
 const appRoutes: Routes = [
@@ -42,6 +46,7 @@ const appRoutes: Routes = [
     CreateMeetingPageComponent,
     ListFilterSelectComponent,
     PageNotFoundComponent,
+    LoadingSpinnerComponent,
   ],
   imports: [
     BrowserModule,
@@ -50,6 +55,9 @@ const appRoutes: Routes = [
     OwlDateTimeModule, 
     OwlNativeDateTimeModule,
     BrowserAnimationsModule,
+    Ng2SmartTableModule,
+    NgxSmartModalModule.forRoot(),
+    FormsModule,
     RouterModule.forRoot(
       appRoutes,
       { enableTracing: true } // <-- debugging purposes only
