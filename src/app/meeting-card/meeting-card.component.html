@@ -20,9 +20,13 @@
                         </div>
                 </div>
             </div>
-            <div class="col-md-2">
-                <button type="button" class="btn btn-success meeting-action-btn">Start</button>
-                <button type="button" class="btn btn-secondary meeting-action-btn">Edit</button>
+            <div class="col-md-2" *ngIf="!readOnly">
+                <button type="button" (click) = "startBtnClicked()" class="btn btn-success meeting-action-btn" >Start</button>
+                <button type="button" (click) = "editBtnClicked()" class="btn btn-secondary meeting-action-btn">Edit</button>
+            </div>
+
+            <div class="col-md-2" *ngIf="readOnly">
+                <button type="button" (click) = "viewBtnClicked()" class="btn btn-secondary meeting-action-btn" >View</button>
             </div>
              
             </div>

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MdtServerService } from '../mdt-server.service';
 import { Meeting } from '../model';
+import {Router} from "@angular/router"
 
 
 @Component({
@@ -10,7 +11,7 @@ import { Meeting } from '../model';
 })
 export class MeetingListPageComponent implements OnInit {
 
-  constructor(private mdtServerService: MdtServerService) { }
+  constructor(private mdtServerService: MdtServerService, private router: Router) { }
 
   public upcomingMeetings : Meeting[] = [];
   public pastMeetings : Meeting[] = [];
@@ -19,6 +20,16 @@ export class MeetingListPageComponent implements OnInit {
   ngOnInit() {
     this.showMeetings();
   }
+
+  // Called when user wants to view meeting
+  viewMeeting(meeting: Meeting){
+    this.router.navigate(['/meeting', meeting._id])
+  }
+
+  startMeeting(meeting: Meeting){
+    
+  }
+
 
   showMeetings(){
     this.mdtServerService.getMeetings()

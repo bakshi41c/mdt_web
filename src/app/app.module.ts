@@ -13,14 +13,16 @@ import { LoginPageComponent } from './login-page/login-page.component';
 import { MeetingListPageComponent } from './meeting-list-page/meeting-list-page.component';
 import { MeetingCardComponent } from './meeting-card/meeting-card.component';
 import { HttpClientModule } from '@angular/common/http';
-import { CreateMeetingPageComponent } from './create-meeting-page/create-meeting-page.component';
 import { ListFilterSelectComponent } from './list-filter-select/list-filter-select.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
+import { MeetingHostPageComponent } from './meeting-host-page/meeting-host-page.component';
+import { MeetingPageComponent } from './meeting-page/meeting-page.component';
 
 
 const appRoutes: Routes = [
-  { path: 'create', component: CreateMeetingPageComponent },
+  { path: 'create', component: MeetingPageComponent },
+  { path: 'meeting/:id', component: MeetingPageComponent },
   // { path: 'hero/:id',      component: HeroDetailComponent },
   // {
   //   path: 'heroes',
@@ -43,10 +45,11 @@ const appRoutes: Routes = [
     LoginPageComponent,
     MeetingListPageComponent,
     MeetingCardComponent,
-    CreateMeetingPageComponent,
     ListFilterSelectComponent,
     PageNotFoundComponent,
     LoadingSpinnerComponent,
+    MeetingHostPageComponent,
+    MeetingPageComponent,
   ],
   imports: [
     BrowserModule,
@@ -60,7 +63,7 @@ const appRoutes: Routes = [
     FormsModule,
     RouterModule.forRoot(
       appRoutes,
-      { enableTracing: true } // <-- debugging purposes only
+      { enableTracing: false } // <-- debugging purposes only
     )
   ],
   providers: [],

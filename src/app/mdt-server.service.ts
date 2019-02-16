@@ -17,12 +17,7 @@ export class MdtServerService {
   private MEETING_URL = this.serverUrl + "/meeting"
   private ALL_STAFF_URL = this.serverUrl + "/staff"
   private ALL_PATIENTS_URL = this.serverUrl + "/patients"
-
-
-  getMeetings(){
-    return this.http.get(this.ALL_MEETING_URL);
-  }
-
+  
   getStaff(){
     return this.http.get(this.ALL_STAFF_URL);
   }
@@ -31,13 +26,26 @@ export class MdtServerService {
     return this.http.get(this.ALL_PATIENTS_URL);
   }
 
+  getMeetings(){
+    return this.http.get(this.ALL_MEETING_URL);
+  }
+
   createMeeting(meeting: Meeting){
     let head = new HttpHeaders({ 'Content-Type': 'application/json' });
-    this.http.post(this.MEETING_URL, JSON.stringify(meeting), {headers: head}).subscribe(
-      res => {
-          Log.i(this, "sent")
-      }
-    );
+    return this.http.post(this.MEETING_URL, JSON.stringify(meeting), {headers: head})
+  }
+
+  getMeeting(id : string){
+    return this.http.get(this.MEETING_URL + "/" + id);
+  }
+
+  updateMeeting(meeting: Meeting){
+    let head = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.put(this.MEETING_URL + "/" + meeting._id, JSON.stringify(meeting), {headers: head})
+  }
+
+  deleteMeeting(meeting: Meeting){
+    return this.http.delete(this.MEETING_URL + "/" + meeting._id)
   }
 
 }
