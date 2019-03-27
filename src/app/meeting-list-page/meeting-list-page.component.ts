@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MdtServerService } from '../mdt-server.service';
-import { Meeting } from '../model';
+import { AuthService } from '../auth.service';
+
+import { Meeting, Staff } from '../model';
 import {Router} from "@angular/router"
 
 
@@ -11,14 +13,15 @@ import {Router} from "@angular/router"
 })
 export class MeetingListPageComponent implements OnInit {
 
-  constructor(private mdtServerService: MdtServerService, private router: Router) { }
+  constructor(private mdtServerService: MdtServerService, private authService : AuthService, private router: Router) { }
 
   public upcomingMeetings : Meeting[] = [];
   public pastMeetings : Meeting[] = [];
-
+  staff: Staff;
 
   ngOnInit() {
     this.showMeetings();
+    this.staff = this.authService.getLoggedInStaff()
   }
 
   // Called when user wants to view meeting
@@ -27,7 +30,7 @@ export class MeetingListPageComponent implements OnInit {
   }
 
   startMeeting(meeting: Meeting){
-    
+    this.router.navigate(['/meeting', meeting._id, "host"])
   }
 
 

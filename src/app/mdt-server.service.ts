@@ -16,14 +16,26 @@ export class MdtServerService {
   private ALL_MEETING_URL = this.serverUrl + "/meetings"
   private MEETING_URL = this.serverUrl + "/meeting"
   private ALL_STAFF_URL = this.serverUrl + "/staff"
+  private STAFF_URL = this.serverUrl + "/staff"
   private ALL_PATIENTS_URL = this.serverUrl + "/patients"
-  
-  getStaff(){
+  private PATIENTS_URL = this.serverUrl + "/patient"
+
+
+  // REST APIs
+  getAllStaff(){
     return this.http.get(this.ALL_STAFF_URL);
+  }
+
+  getStaff(staffId : string){
+    return this.http.get(this.STAFF_URL + "/" + staffId);
   }
 
   getPatients(){
     return this.http.get(this.ALL_PATIENTS_URL);
+  }
+
+  getPatient(patientId : string){
+    return this.http.get(this.PATIENTS_URL + "/" + patientId);
   }
 
   getMeetings(){
@@ -47,5 +59,4 @@ export class MdtServerService {
   deleteMeeting(meeting: Meeting){
     return this.http.delete(this.MEETING_URL + "/" + meeting._id)
   }
-
 }

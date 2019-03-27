@@ -1,6 +1,6 @@
 <div class="login-form">
-    <input type="text" id="inpt_username" class="form-control"  placeholder="username"> <br/>
+    <input type="text" id="inpt_username" class="form-control"  placeholder="username" [(ngModel)]="staffId"> <br/>
     <input type="password" id="inpt_password" class="form-control" type="text" id="password_input"  placeholder="password"> <br/>
-    <button type="button" id="btn_login" class="btn btn-primary">Login</button>
+    <label *ngIf="error" id="errorText" class="invalid-feedback">Invalid Login</label>
+    <button (click)="login()" type="button" id="btn_login" class="btn btn-success">Login</button>
 </div>
-

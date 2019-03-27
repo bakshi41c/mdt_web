@@ -2,8 +2,8 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Meeting, Staff, Patient } from '../model';
 import { MdtServerService } from '../mdt-server.service';
 import { NgxSmartModalService } from 'ngx-smart-modal';
-import {Router, ActivatedRoute} from "@angular/router"
-import * as moment from 'moment';
+import { Router, ActivatedRoute } from "@angular/router"
+import { AuthService } from '../auth.service';
 
 import { Log } from '../logger';
 
@@ -13,9 +13,10 @@ import { Log } from '../logger';
   styleUrls: ['./meeting-page.component.css']
 })
 export class MeetingPageComponent implements OnInit {
-  readOnly : boolean = false
+  readOnly: boolean = false
+  newMeeting: boolean = false
   loading: boolean = true
-  meeting : Meeting
+  meeting: Meeting
 
   showStaffListLoading = false;
   showPatientListLoading = false;
@@ -27,7 +28,7 @@ export class MeetingPageComponent implements OnInit {
       display: false
     },
     columns: {
-      _id : {
+      _id: {
         title: 'Id'
       },
       name: {
@@ -37,9 +38,9 @@ export class MeetingPageComponent implements OnInit {
         title: 'Role'
       }
     },
-    actions : {
-      columnTitle : "",
-      add : false,
+    actions: {
+      columnTitle: "",
+      add: false,
       edit: false,
       delete: false
     }
@@ -52,7 +53,7 @@ export class MeetingPageComponent implements OnInit {
       display: false
     },
     columns: {
-      _id : {
+      _id: {
         title: 'Id'
       },
       name: {
@@ -61,39 +62,44 @@ export class MeetingPageComponent implements OnInit {
       age: {
         title: 'Age'
       },
-      hospital_number : {
+      hospital_number: {
         title: 'Hospital no.'
       }
     },
-    actions : {
-      columnTitle : "",
-      add : false,
+    actions: {
+      columnTitle: "",
+      add: false,
       edit: false,
       delete: false
     }
   }
 
-  constructor(private mdtServerService: MdtServerService, public ngxSmartModalService: NgxSmartModalService, 
-    private router: Router, private activatedRoute: ActivatedRoute) { 
+  constructor(private mdtServerService: MdtServerService, public ngxSmartModalService: NgxSmartModalService,
+    private router: Router, private activatedRoute: ActivatedRoute, private authService: AuthService,) {
   }
 
   ngOnInit() {
     this.loading = true;
-    let urlComponent =  this.activatedRoute.snapshot.url[1].toString()
+    Log.dr(this, this.activatedRoute.snapshot)
+    let urlComponent = this.activatedRoute.snapshot.url[1].toString()
 
-    if (urlComponent === "create"){ // New meeting
+    this.newMeeting = urlComponent === "create";
+
+    if (this.newMeeting) {
+
       this.meeting = new Meeting();
-      this.loading=false;
+      this.meeting.host = this.authService.getLoggedInStaff()._id
+      this.loading = false;
     } else {
       this.mdtServerService.getMeeting(urlComponent).subscribe(
-      (data) => {
-        this.meeting = data as Meeting;
-        Log.ds(this, this.meeting)
-        this.loading=false;
-      },
-      (err) => {
-        Log.e(this, "ERROR: Fetching Meeting " + urlComponent)
-      })
+        (data) => {
+          this.meeting = data as Meeting;
+          Log.ds(this, this.meeting)
+          this.loading = false;
+        },
+        (err) => {
+          Log.e(this, "ERROR: Fetching Meeting " + urlComponent)
+        })
     }
     // TODO: Case when create = false, and meetingId is null
   }
@@ -105,50 +111,50 @@ export class MeetingPageComponent implements OnInit {
     this.ngxSmartModalService.getModal('staffAddModal').open()
   }
 
-  getStaffList(){
+  getStaffList() {
     Log.d(this, "Fetching Staff list...");
-    this.mdtServerService.getStaff()
-    .subscribe(
-      (data) => {
-      if (!Array.isArray(data)) {
-        Log.e(this, "Recieved meeting object not an array")
-        return;
-      }
-      this.staffList = data as Staff[]
-      // Log.ds(this,this.staffList)
-      this.showStaffListLoading = false;
-    });
+    this.mdtServerService.getAllStaff()
+      .subscribe(
+        (data) => {
+          if (!Array.isArray(data)) {
+            Log.e(this, "Recieved meeting object not an array")
+            return;
+          }
+          this.staffList = data as Staff[]
+          // Log.ds(this,this.staffList)
+          this.showStaffListLoading = false;
+        });
   }
 
   patientBtnClicked() {
     Log.i(this, "Patient Btn Clicked!");
     this.showStaffListLoading = true;
-    this.getPatientList();    
+    this.getPatientList();
     this.ngxSmartModalService.getModal('patientAddModal').open()
   }
 
-  getPatientList(){
+  getPatientList() {
     Log.d(this, "Fetching Patient list...");
     this.mdtServerService.getPatients()
-    .subscribe((data) => {
-      if (!Array.isArray(data)) {
-        Log.e(this, "Recieved meeting object not an array")
-        return;
-      }
-      let objects = data as any[]
-      
-      this.patientList = []
-      data.forEach(element => {
-        let patient = Patient.parsePatient(element)
-        this.patientList.push(patient)
-      });
+      .subscribe((data) => {
+        if (!Array.isArray(data)) {
+          Log.e(this, "Recieved meeting object not an array")
+          return;
+        }
+        let objects = data as any[]
 
-      // Log.ds(this, this.patientList)
-      this.showStaffListLoading = false;
-    });
+        this.patientList = []
+        data.forEach(element => {
+          let patient = Patient.parsePatient(element)
+          this.patientList.push(patient)
+        });
+
+        // Log.ds(this, this.patientList)
+        this.showStaffListLoading = false;
+      });
   }
 
-  patientAddDone(selectedPatients){
+  patientAddDone(selectedPatients) {
     this.meeting.patients = []
     // Log.dr(this, selectedPatients)
     selectedPatients.forEach(patient => {
@@ -158,7 +164,7 @@ export class MeetingPageComponent implements OnInit {
     Log.ds(this, this.meeting.patients)
   }
 
-  staffAddDone(slectedStaff){
+  staffAddDone(slectedStaff) {
     this.meeting.staff = []
     slectedStaff.forEach(staff => {
       this.meeting.staff.push(staff._id)
@@ -167,40 +173,50 @@ export class MeetingPageComponent implements OnInit {
     Log.ds(this, this.meeting.staff)
   }
 
-  createButtonClicked() {
-    Log.i(this, "Create Button clicked!")
-    Log.ds(this, this.meeting)
-    this.mdtServerService.createMeeting(this.meeting).subscribe(
-      res => {
+  saveButtonClicked() {
+    Log.i(this, "Save/Create Button clicked!")
+
+    if (this.newMeeting) {
+      this.mdtServerService.createMeeting(this.meeting).subscribe(
+        res => {
           Log.i(this, "Meeting Created Succesfully: " + res);
           this.navigateToMeetingListPage()
-      }
-    );
-  }
-
-  saveButtonClicked() {
-    Log.i(this, "Save Button clicked!")
-    Log.ds(this, this.meeting)
-    this.mdtServerService.updateMeeting(this.meeting).subscribe(
-      res => {
-          Log.i(this, "Meeting Updated Succesfully: " + res);
-          this.navigateToMeetingListPage()      
+        },
+        err => {
+          Log.e(this, "Error Creating Meeting: " + err);
+          Log.dr(this, err);
         }
-    );
+      );
+    } else {
+      this.mdtServerService.updateMeeting(this.meeting).subscribe(
+        res => {
+          Log.i(this, "Meeting Updated Succesfully: " + res);
+          this.navigateToMeetingListPage()
+        },
+        err => {
+          Log.e(this, "Error Updated Meeting: " + err);
+          Log.dr(this, err);
+        }
+      );
+    }
   }
 
-  deleteButtonClicked(){
+  deleteButtonClicked() {
     Log.i(this, "Delete Button clicked!")
     Log.ds(this, this.meeting)
     this.mdtServerService.deleteMeeting(this.meeting).subscribe(
       res => {
         Log.i(this, "Meeting Deleted Succesfully: " + res);
         this.navigateToMeetingListPage()
+      },
+      err => {
+        Log.e(this, "Error Deleting Meeting: " + err);
+        Log.dr(this, err);
       }
     )
   }
 
-  navigateToMeetingListPage(){
+  navigateToMeetingListPage() {
     this.router.navigate(['/meeting']);
   }
 

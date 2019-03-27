@@ -1,0 +1,57 @@
+<div>
+  <label>{{patient.name}}'s data:</label>
+  <small class="form-text text-muted">To change the patient: you need to discuss them first</small>
+  <br/>
+  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+      <label class="btn btn-primary" [ngClass]= "{'active' :  !showPatientDetails}">
+        <input (click)="showPatientDetails = false" type="radio" name="action-menu" id="poll" autocomplete="off"> MDT Meeting Data
+      </label>
+      <label class="btn btn-primary" [ngClass]= "{'active' :  showPatientDetails}">
+        <input (click)="showPatientDetails = true" type="radio" name="action-menu" id="comment" autocomplete="off"> Patient Details
+      </label>
+    </div>
+  <br/>
+  <br/>
+  <div class="tab-pane fade active show" *ngIf="!showPatientDetails">
+      <label class="control-label" for="mdtQuestionInput">MDT Question:</label>
+      <input class="form-control" id="mdtQuestionInput" type="text" placeholder="MDT Question" [(ngModel)]="patientMeetingData.mdtQuestion">
+      <br/>
+      <label class="control-label" for="groupInput">Group:</label>
+      <input class="form-control" id="groupInput" type="text" placeholder="Group" [(ngModel)]="patientMeetingData.group">
+      <br/>
+      <label class="control-label" for="lcInput">LC:</label>
+      <input class="form-control" id="lcInput" type="text" placeholder="Group" [(ngModel)]="patientMeetingData.lc">
+      <br/>
+      <label class="control-label" for="mdtOutcomeInput">MDT Outcome:</label>
+      <textarea class="form-control" id="mdtOutcomeInput" rows="3" placeholder="MDT Outcome" [(ngModel)]="patientMeetingData.mdtOutcome"></textarea>
+      <br/>
+      <label class="control-label" for="investigationInput">Investigation:</label>
+      <textarea class="form-control" id="investigationInput" rows="3" placeholder="Investigation" [(ngModel)]="patientMeetingData.investigation"></textarea>
+      <br/>
+      <label class="control-label" for="surgeryInput">Surgery:</label>
+      <textarea class="form-control" id="surgeryInput" rows="3" placeholder="Surgery" [(ngModel)]="patientMeetingData.surgery"></textarea>
+      <br/>
+      <button type="button" (click)="onSaveClicked()" class="btn btn-primary">Save</button>
+  </div>
+  
+  <div class="tab-pane fade active show" *ngIf="showPatientDetails">
+      <label class="control-label" for="patientId">Id:</label>
+      <input disabled class="form-control" id="patientId" type="text" placeholder="{{patient._id}}">
+      <br/>
+      <label class="control-label" for="patientName">Name:</label>
+      <input disabled class="form-control" id="patientName" type="text" placeholder="{{patient.name}}">
+      <br/>
+      <label class="control-label" for="patientDob">DOB:</label>
+      <input disabled class="form-control" id="patientDob" type="text" placeholder="{{patient.dob}}">
+      <br/>
+      <label class="control-label" for="patientAge">Age:&nbsp;</label>
+      <input disabled class="form-control" id="patientAge" type="text" placeholder="{{patient.age}}">
+      <br/>
+      <label class="control-label" for="patientHn">Hospital No:</label>
+      <input disabled class="form-control" id="patientHn" type="text" placeholder="{{patient.hospitalNumber}}">
+      <br/>
+      <label class="control-label" for="patientIffLink">Infoflex Link:&nbsp;</label>
+      <a id="patientIffLink" type="text" href="{{patient.infoflexLink}}">{{patient.infoflexLink}}</a>
+  </div>
+
+</div>

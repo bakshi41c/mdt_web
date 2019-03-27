@@ -7,6 +7,8 @@ import { FormsModule } from '@angular/forms';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { NgxSmartModalModule } from 'ngx-smart-modal';
 
+import { AuthorizeGuard } from './authorize.guard';
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginPageComponent } from './login-page/login-page.component';
@@ -18,23 +20,28 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
 import { MeetingHostPageComponent } from './meeting-host-page/meeting-host-page.component';
 import { MeetingPageComponent } from './meeting-page/meeting-page.component';
+import { MeetingStreamComponent } from './meeting-stream/meeting-stream.component';
+import { MeetingPatientComponent } from './meeting-patient/meeting-patient.component';
+import { CreatePollComponent } from './create-poll/create-poll.component';
+import { PollResultsComponent } from './poll-results/poll-results.component';
+import { EventCardComponent } from './event-card/event-card.component';
+import { CommentReplyComponent } from './comment-reply/comment-reply.component';
+import { PatientDataEditComponent } from './patient-data-edit/patient-data-edit.component';
+import { PollVoteComponent } from './poll-vote/poll-vote.component';
 
 
 const appRoutes: Routes = [
-  { path: 'create', component: MeetingPageComponent },
-  { path: 'meeting/:id', component: MeetingPageComponent },
-  // { path: 'hero/:id',      component: HeroDetailComponent },
-  // {
-  //   path: 'heroes',
-  //   component: HeroListComponent,
-  //   data: { title: 'Heroes List' }
-  // },
-  { path: 'meeting',
-    component: MeetingListPageComponent
-  },
+  { path: 'login', component: LoginPageComponent },
+  { path: '', canActivate:[AuthorizeGuard], children: [
+    // { path: 'meeting/card', component: EventCardComponent },
+    { path: 'meeting/create', component: MeetingPageComponent },
+    { path: 'meeting/:id', component: MeetingPageComponent },
+    { path: 'meeting/:id/host', component: MeetingHostPageComponent },
+    { path: 'meeting', component: MeetingListPageComponent,},
+  ]},
   { path: '',
     redirectTo: '/meeting',
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
   { path: '**', component: PageNotFoundComponent }
 ];
@@ -50,23 +57,33 @@ const appRoutes: Routes = [
     LoadingSpinnerComponent,
     MeetingHostPageComponent,
     MeetingPageComponent,
+    MeetingStreamComponent,
+    MeetingPatientComponent,
+    CreatePollComponent,
+    PollResultsComponent,
+    EventCardComponent,
+    CommentReplyComponent,
+    PatientDataEditComponent,
+    PollVoteComponent,
   ],
   imports: [
     BrowserModule,
+    FormsModule,
     AppRoutingModule,
     HttpClientModule,
-    OwlDateTimeModule, 
+    OwlDateTimeModule,
     OwlNativeDateTimeModule,
     BrowserAnimationsModule,
     Ng2SmartTableModule,
     NgxSmartModalModule.forRoot(),
-    FormsModule,
     RouterModule.forRoot(
       appRoutes,
       { enableTracing: false } // <-- debugging purposes only
     )
   ],
-  providers: [],
+  providers: [
+    AuthorizeGuard
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

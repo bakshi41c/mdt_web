@@ -1,0 +1,14 @@
+<label>Question: </label><br/>
+<label>{{question}}</label>
+<br/>
+<label>Options: </label>
+<div id="options" >
+    <div class="form-group">
+        <div  *ngFor="let option of options"  class="custom-control custom-radio">
+          <input type="radio" id="{{option + 'Id'}}" name="voteRadio" class="custom-control-input" (change)="onVoteChanged(option)" >
+          <label class="custom-control-label" for="{{option + 'Id'}}">{{option}}</label>
+        </div>
+    </div>
+</div>
+
+<button type="button" (click) = "onVoteButtonClicked()" class="btn btn-primary">Vote</button>

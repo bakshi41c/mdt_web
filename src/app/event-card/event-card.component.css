@@ -1,0 +1,81 @@
+.avatar {
+    vertical-align: middle;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    float: left;
+    margin: 10px;
+    margin-left: -10px;
+    margin-right: 20px;
+}
+
+.avatar-slim {
+    vertical-align: middle;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    float: left;
+    margin-left: -5px;
+    margin-right: 10px;
+}
+
+.card-text {
+    max-width: 90%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.card-text-slim {
+    max-width: 80%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.card-actions{
+    margin-top: 10px;
+    float: right;
+}
+
+.card-actions-slim {
+    margin-top: -35px;
+    float: right;
+}
+
+.link-ref-text {
+    margin-top: -17px;
+    margin-bottom: 3px;
+    font-size: 0.8rem;
+}
+
+#disagreeBtn {
+    margin-top: 15px;
+    margin-right: 20px;
+}
+
+#btn2{
+    margin-right: 20px;
+}
+
+.card-slim {
+    height: 60px;
+}
+
+.card {
+    width: 90% !important;
+}
+.card-popup {
+    width: 100% !important;
+    -webkit-box-shadow: 10px 10px 5px -8px rgba(0,0,0,0.75);
+    -moz-box-shadow: 10px 10px 5px -8px rgba(0,0,0,0.75);
+    box-shadow: 10px 10px 5px -8px rgba(0,0,0,0.75);
+}
+
+.popup {
+    position: absolute;
+    top: 50px;
+    left: 50px;
+    z-index: 110;
+    width: 100%;
+}

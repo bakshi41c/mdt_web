@@ -1,0 +1,22 @@
+<label>Patient: </label>
+<select ngModel (ngModelChange)="patientSelected($event)" class="form-control" id="patientSelect">
+        <option [ngValue]="null">(General Poll)</option>
+        <option *ngFor="let patient of getPatientsAsArray()" [ngValue]="patient._id" [selected]="patient._id == currentPatientDisucussion._id">{{patient.name}}</option>
+</select>
+<br/>
+<label>Question: </label>
+<input type="text" class="form-control" id="questionInput" [(ngModel)]="question" placeholder="Enter Question">
+<br/>
+<label>Options: </label>
+<div id="options" >
+    <div *ngFor="let option of options" class="custom-control custom-radio option-radio">
+        <input type="radio" class="custom-control-input" disabled="">
+        <label class="custom-control-label" for="customRadio3">{{option}}</label>
+    </div>
+</div>
+<input type="text" class="form-control" id="optionInput" placeholder="Add Option" [(ngModel)]="potentialOption">
+<br/>
+<button type="button" (click)='addOption()' class="btn btn-outline-primary">+ Add</button>
+<small *ngIf="options.length < 2" id="optionHelp" class="form-text text-muted">You need at least two options</small>
+<br/>
+<button type="button" (click) = "onCreatePollClicked()" class="btn btn-primary">Create Poll</button>

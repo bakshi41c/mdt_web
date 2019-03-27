@@ -1,0 +1,19 @@
+<div class="form-group">
+  <div *ngIf="!isReply">
+    <label>Patient: </label>
+    <select ngModel (ngModelChange)="patientSelected($event)" class="form-control" id="patientSelect">
+      <option [ngValue]="null">(General Comment)</option>
+      <option *ngFor="let patient of getPatientsAsArray()" [ngValue]="patient._id" [selected]="patient._id == currentPatientDisucussion._id">{{patient.name}}</option>
+    </select>
+  </div>
+  <br/>
+  <div *ngIf="isReply">
+    <label class="control-label" for="replyTo">Reply To:</label>
+    <input class="form-control" id="replyTo" type="text" disabled="" placeholder="{{replyTo}}">
+  </div>
+
+  <label for="commentInput">{{commentLable}}</label>
+  <textarea class="form-control" id="commentInput" rows="3" [(ngModel)]="comment"></textarea>
+  <br/>
+  <button type="button" (click) = "onCommentClicked()" class="btn btn-primary">{{commentBtnLable}}</button>
+</div>
