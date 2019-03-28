@@ -1,10 +1,11 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, AfterViewInit, ViewChildren, QueryList } from '@angular/core';
 import { Meeting, Patient, MeetingEvent, EventType, EventAction, StartContent, EventStreamError, AckContent, ErrorAckContent, JoinContent, CommentContent, PatientMeetingData, ReplyContent, PollContent, PatientDataChangeContent, VoteContent, DiscussionContent } from '../model';
 import { MdtServerWsService } from '../mdt-server-ws.service';
+import { PollResultsComponent } from '../poll-results/poll-results.component';
 import { MdtServerService } from '../mdt-server.service';
 import { EventsStorageService } from '../events-storage.service';
 import { AuthService } from '../auth.service';
-import { Router, ActivatedRoute } from "@angular/router"
+import { ActivatedRoute } from "@angular/router"
 
 import { Log } from '../logger';
 
@@ -13,7 +14,7 @@ import { Log } from '../logger';
   templateUrl: './meeting-host-page.component.html',
   styleUrls: ['./meeting-host-page.component.css']
 })
-export class MeetingHostPageComponent implements OnInit {
+export class MeetingHostPageComponent implements AfterViewInit {
   meetingId: string = "";
   meeting: Meeting;
   loading: boolean = true;
@@ -24,6 +25,12 @@ export class MeetingHostPageComponent implements OnInit {
   eventIds = []; // Events we are displaying
   currentPatientDisucussion: Patient = new Patient(); // The current patient under discussion, empty patient object if none
   currentSelectedAction = EventAction.UNKNOWN; // The view selected on the right panel (based on action selected)
+
+  // Using ViewChildren insted of ViewChild because of *ngIf, also the reason why we use AfterViewInit instead of OnInit
+  @ViewChildren('pollResultPanel') 
+  public pollResultsComponents: QueryList<PollResultsComponent>
+
+  private pollResultsComponent: PollResultsComponent;
 
   pollEvents = new Array(); // Cache of all poll end events and their acks (which contain all the votes)
 
@@ -57,7 +64,13 @@ export class MeetingHostPageComponent implements OnInit {
      private mdtServerService: MdtServerService, private eventStorageService: EventsStorageService,
      private activatedRoute: ActivatedRoute) { }
 
-  ngOnInit() {
+  ngAfterViewInit() {
+    // Getting the reference for pollResultComponent for the draw() function
+    this.pollResultsComponents.changes.subscribe((comps: QueryList <PollResultsComponent>) =>
+    {
+        this.pollResultsComponent = comps.first;
+    });
+
     this.loading = true;
     this.meetingId =  this.activatedRoute.snapshot.url[1].toString()
     Log.d(this, "Hosting meetingId: " + this.meetingId)
@@ -92,6 +105,7 @@ export class MeetingHostPageComponent implements OnInit {
         // Update Current Discussed Patient if its a discussion event
         this.handleSpecialEvents(event)
 
+        Log.i(this, "Recieved Event: " + "[" + event.type + "] " + event.eventId)
         // Store the event
         this.eventStorageService.storeEvent(event)
 
@@ -123,7 +137,6 @@ export class MeetingHostPageComponent implements OnInit {
       me.type = EventType.COMMENT;
     }
     this.sendEvent(me, (ackEventJson) => {
-      Log.d(this, "ACK for [" + me.type + "]: " + me.eventId)
       this.checkAckAndStore(me, this.parseEventJson(ackEventJson))
     });
   }
@@ -138,7 +151,6 @@ export class MeetingHostPageComponent implements OnInit {
     me.meetingId = this.meetingId;
     me.type = EventType.POLL;
     this.sendEvent(me, (ackEventJson) => {
-      Log.d(this, "ACK for [" + me.type + "]: " + me.eventId)
       this.checkAckAndStore(me, this.parseEventJson(ackEventJson))
     });
   }
@@ -153,7 +165,6 @@ export class MeetingHostPageComponent implements OnInit {
     me.meetingId = this.meetingId;
     me.type = EventType.PATIENT_DATA_CHANGE;
     this.sendEvent(me, (ackEventJson) => {
-      Log.d(this, "ACK for [" + me.type + "]: " + me.eventId)
       this.checkAckAndStore(me, this.parseEventJson(ackEventJson))
     });
   }
@@ -168,7 +179,6 @@ export class MeetingHostPageComponent implements OnInit {
     me.meetingId = this.meetingId;
     me.type = EventType.VOTE;
     this.sendEvent(me, (ackEventJson) => {
-      Log.d(this, "ACK for [" + me.type + "]: " + me.eventId)
       let ok = this.checkAckAndStore(me, this.parseEventJson(ackEventJson))
       if (ok) this.pollEvents[me.refEvent].voted = true; 
     });
@@ -185,7 +195,6 @@ export class MeetingHostPageComponent implements OnInit {
     me.meetingId = this.meetingId;
     me.type = EventType.DISCUSSION;
     this.sendEvent(me, (ackEventJson) => {
-      Log.d(this, "ACK for [" + me.type + "]: " + me.eventId)
       let ok = this.checkAckAndStore(me, this.parseEventJson(ackEventJson))
       if (ok) {
         this.currentPatientDisucussion = this.patients[patient_id];
@@ -205,7 +214,6 @@ export class MeetingHostPageComponent implements OnInit {
     me.meetingId = this.meetingId;
     me.type = EventType.DISAGREEMENT;
     this.sendEvent(me, (ackEventJson) => {
-      Log.d(this, "ACK for [" + me.type + "]: " + me.eventId)
       this.checkAckAndStore(me, this.parseEventJson(ackEventJson))
     });
   }
@@ -217,7 +225,6 @@ export class MeetingHostPageComponent implements OnInit {
     me.meetingId = this.meetingId;
     me.type = EventType.POLL_END;
     this.sendEvent(me, (ackEventJson) => {
-      Log.d(this, "ACK for [" + me.type + "]: " + me.eventId)
       this.checkAckAndStore(me, this.parseEventJson(ackEventJson))
     });
   }
@@ -229,12 +236,12 @@ export class MeetingHostPageComponent implements OnInit {
     me.meetingId = this.meetingId;
     me.type = EventType.END;
     this.sendEvent(me, (ackEventJson) => {
-      Log.d(this, "ACK for [" + me.type + "]: " + me.eventId)
       this.checkAckAndStore(me, this.parseEventJson(ackEventJson))
     });
   }
 
   checkAckAndStore(originalEvent : MeetingEvent, ackEvent: MeetingEvent){
+    Log.d(this, "ACK for [" + originalEvent.type + "]: " + originalEvent.eventId)
     let ackVerified = false;
     let ack = ackEvent as MeetingEvent
     // TODO: Verify signature
@@ -290,7 +297,7 @@ export class MeetingHostPageComponent implements OnInit {
       this.eventStorageService.getEvent(event.refEvent).subscribe(
         (pollEndEvent : MeetingEvent) => {
           if (this.pollEvents[pollEndEvent.refEvent]) {
-            this.pollEvents[event.refEvent].pollEndAck = event.eventId;  
+            this.pollEvents[pollEndEvent.refEvent].pollEndAck = event.eventId;  
           } else {
             Log.w(this, "No poll event found with Id: " + pollEndEvent.refEvent)
           }
@@ -347,6 +354,7 @@ export class MeetingHostPageComponent implements OnInit {
         this.countVotes(eventId, (results)=>{
           this.actionPanelConfig.pollResultsPanel.results = results
           this.currentSelectedAction = EventAction.VIEW_RESULTS;
+          // this.pollResultsComponent.draw();
         },
         ()=>{
           Log.e(this, "Error viewing results")
@@ -399,14 +407,13 @@ export class MeetingHostPageComponent implements OnInit {
           (pollEndAckEvent: MeetingEvent) => {
             let pec = pollEndAckEvent.content as AckContent
             let voteEvents = pec.details["votes"]
-
             let results = {}
             voteEvents.forEach(voteEvent => {
               let vc = voteEvent["content"] as VoteContent
               if (vc.vote in results) {
                 results[vc.vote] += 1;
               } else {
-                results[vc.vote] = 0;
+                results[vc.vote] = 1;
               }
             });
             callback(results);
@@ -499,7 +506,7 @@ export class MeetingHostPageComponent implements OnInit {
       if (ok) { // Successfully joined
         if (ackEvent.type === EventType.ACK_JOIN) {
           Log.i(this, "JOINED Meeting Succesfully")
-          Log.d(this, "Parsing the start event from ACL_JOIN")
+          Log.d(this, "Parsing the start event from ACK_JOIN")
 
           let ac = ackEvent.content as AckContent
           if (ac.details["startEvent"]) {

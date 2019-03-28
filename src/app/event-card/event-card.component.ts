@@ -52,8 +52,8 @@ export class EventCardComponent implements OnInit {
       this.eventStorageService.getEvent(this.eventId).subscribe(
       (event) => {
         this.event = event;
-        this.staffName = "[Fetching Staff Name...]";
-        this.patientName = "[Fetching Patient Name...]";
+        this.staffName = "#####";
+        this.patientName = "#####";
         this.render();
       },
 
@@ -67,6 +67,8 @@ export class EventCardComponent implements OnInit {
   render(){
     this.avatar = "/assets/images/avatar" + (this.event["by"].charCodeAt(0) % 5) + ".png"
     if (!this.staffNameUpdated) this.updateStaffName();
+
+    Log.d(this, "Rendering Event Card: " + this.event.type)
 
     switch (this.event.type) {
       case EventType.START:{
@@ -140,7 +142,7 @@ export class EventCardComponent implements OnInit {
         this.slim = false;
         this.button = false;
         this.referenceEvent = true;
-        this.refLinkTitle = "Reply To: " +  + this.formatLongString(this.event.refEvent);
+        this.refLinkTitle = "Reply To: " + this.formatLongString(this.event.refEvent);
         this.refEventId = this.event.refEvent;
         let c = this.event.content as ReplyContent;
         this.title =  c.reply

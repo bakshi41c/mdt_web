@@ -55,6 +55,7 @@
                               (saveBtnClicked)="patientDataSaveBtnClicked($event)">
           </app-patient-data-edit>
           <app-poll-results *ngIf=" getCurrentSelectedActionAsString() === 'VIEW_RESULTS'"
+                              #pollResultPanel 
                               [results]="actionPanelConfig.pollResultsPanel.results"
                               [question]="actionPanelConfig.pollResultsPanel.question">
           </app-poll-results>

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges, OnChanges } from '@angular/core';
 import * as Chart from 'chart.js'
 import { Log } from '../logger';
 
@@ -7,7 +7,7 @@ import { Log } from '../logger';
   templateUrl: './poll-results.component.html',
   styleUrls: ['./poll-results.component.css']
 })
-export class PollResultsComponent implements OnInit {
+export class PollResultsComponent implements OnInit, OnChanges {
 
   constructor() { }
 
@@ -22,10 +22,14 @@ export class PollResultsComponent implements OnInit {
   colors = ['#2c3e50', '#18bc9c', '#3498db', '#e74c3c', '#f39c12', '#7b8a8b', '#c5395e' , '#694aab'];
 
   ngOnInit() {
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
     this.draw();
   }
 
-  draw() {
+  public draw() {
+    Log.d(this, "Drawing graph...");
     this.canvas = document.getElementById('pollResults');
     if (this.canvas) {
       this.ctx = this.canvas.getContext('2d');
@@ -43,7 +47,6 @@ export class PollResultsComponent implements OnInit {
     let backgroundColors = []
     
     for (var i = 0; i < values.length; i++) {
-      Log.d(this, this.colors)
       backgroundColors.push(this.colors[i % this.colors.length]);
     }
 
