@@ -40,6 +40,7 @@ export class EventsStorageService {
   }
 
   storeErrorEvent(event : MeetingEvent) {
+    Log.w(this, "Storing error event " + event.eventId)
     this.errorEvents[event.eventId] = event;
   }
 }

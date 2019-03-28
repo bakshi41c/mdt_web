@@ -177,7 +177,8 @@ export class EventCardComponent implements OnInit {
       (data) => {
         let patient = data as Patient
         this.patientName = patient.name
-        // this.render()
+        this.patientNameUpdated = true;
+        this.render()
       },
       (error) => {
         Log.e(this, "Error fetching Patient name")
@@ -191,7 +192,8 @@ export class EventCardComponent implements OnInit {
       (data) => {
         let staff = data as Staff
         this.staffName = staff.name
-        // this.render()
+        this.staffNameUpdated = true;
+        this.render()
       },
       (error) => {
         Log.e(this, "Error fetching Staff name")

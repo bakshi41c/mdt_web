@@ -49,6 +49,7 @@ export class CommentReplyComponent implements OnInit {
       }
       cmc.comment = this.comment
       this.commentBtnClicked.emit(cmc)
+      this.comment = ""
     }
   }
 

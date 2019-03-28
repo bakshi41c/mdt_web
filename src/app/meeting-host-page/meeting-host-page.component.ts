@@ -122,9 +122,9 @@ export class MeetingHostPageComponent implements OnInit {
       me.meetingId = this.meetingId;
       me.type = EventType.COMMENT;
     }
-    this.sendEvent(me, (ackEvent) => {
-      Log.d(this, "ACK for " + me.eventId)
-      this.checkAck(me, ackEvent)
+    this.sendEvent(me, (ackEventJson) => {
+      Log.d(this, "ACK for [" + me.type + "]: " + me.eventId)
+      this.checkAckAndStore(me, this.parseEventJson(ackEventJson))
     });
   }
 
@@ -137,9 +137,9 @@ export class MeetingHostPageComponent implements OnInit {
     me.refEvent = this.eventStorageService.getLastEventId();
     me.meetingId = this.meetingId;
     me.type = EventType.POLL;
-    this.sendEvent(me, (ackEvent) => {
-      Log.d(this, "ACK for " + me.eventId)
-      this.checkAck(me, ackEvent)
+    this.sendEvent(me, (ackEventJson) => {
+      Log.d(this, "ACK for [" + me.type + "]: " + me.eventId)
+      this.checkAckAndStore(me, this.parseEventJson(ackEventJson))
     });
   }
 
@@ -152,9 +152,9 @@ export class MeetingHostPageComponent implements OnInit {
     me.refEvent = this.eventStorageService.getLastEventId();
     me.meetingId = this.meetingId;
     me.type = EventType.PATIENT_DATA_CHANGE;
-    this.sendEvent(me, (ackEvent) => {
-      Log.d(this, "ACK for " + me.eventId)
-      this.checkAck(me, ackEvent)
+    this.sendEvent(me, (ackEventJson) => {
+      Log.d(this, "ACK for [" + me.type + "]: " + me.eventId)
+      this.checkAckAndStore(me, this.parseEventJson(ackEventJson))
     });
   }
 
@@ -167,10 +167,10 @@ export class MeetingHostPageComponent implements OnInit {
     me.refEvent = this.actionPanelConfig.votePanel.pollEvent;
     me.meetingId = this.meetingId;
     me.type = EventType.VOTE;
-    this.sendEvent(me, (ackEvent) => {
-      Log.d(this, "ACK for " + me.eventId)
-      let verified = this.checkAck(me, ackEvent)
-      if (verified) this.pollEvents[me.refEvent].voted = true; 
+    this.sendEvent(me, (ackEventJson) => {
+      Log.d(this, "ACK for [" + me.type + "]: " + me.eventId)
+      let ok = this.checkAckAndStore(me, this.parseEventJson(ackEventJson))
+      if (ok) this.pollEvents[me.refEvent].voted = true; 
     });
   }
 
@@ -184,16 +184,16 @@ export class MeetingHostPageComponent implements OnInit {
     me.refEvent = this.eventStorageService.getLastEventId();
     me.meetingId = this.meetingId;
     me.type = EventType.DISCUSSION;
-    this.sendEvent(me, (ackEvent) => {
-      let ack = ackEvent as MeetingEvent
-      if (ack.type === EventType.ACK) {
-        Log.d(this, "ACK for " + me.eventId)
-        this.checkAck(me, ackEvent)
+    this.sendEvent(me, (ackEventJson) => {
+      Log.d(this, "ACK for [" + me.type + "]: " + me.eventId)
+      let ok = this.checkAckAndStore(me, this.parseEventJson(ackEventJson))
+      if (ok) {
         this.currentPatientDisucussion = this.patients[patient_id];
         this.showPatientChangeSelect = false;
-        return;
+      } else {
+        Log.e(this, "Error in ACK, error changing patient")
       }
-      
+      return;
     });
   }
 
@@ -204,9 +204,9 @@ export class MeetingHostPageComponent implements OnInit {
     me.refEvent = refEvent;
     me.meetingId = this.meetingId;
     me.type = EventType.DISAGREEMENT;
-    this.sendEvent(me, (ackEvent) => {
-      Log.d(this, "ACK for " + me.eventId)
-      this.checkAck(me, ackEvent)
+    this.sendEvent(me, (ackEventJson) => {
+      Log.d(this, "ACK for [" + me.type + "]: " + me.eventId)
+      this.checkAckAndStore(me, this.parseEventJson(ackEventJson))
     });
   }
 
@@ -216,47 +216,57 @@ export class MeetingHostPageComponent implements OnInit {
     me.refEvent = refEvent;
     me.meetingId = this.meetingId;
     me.type = EventType.POLL_END;
-    this.sendEvent(me, (ackEvent) => {
-      Log.d(this, "ACK for " + me.eventId)
-      this.checkAck(me, ackEvent)
+    this.sendEvent(me, (ackEventJson) => {
+      Log.d(this, "ACK for [" + me.type + "]: " + me.eventId)
+      this.checkAckAndStore(me, this.parseEventJson(ackEventJson))
     });
   }
 
-  checkAck(originalEvent : MeetingEvent, ackEventJson: any){
-    let ackVerified = false;
+  endMeeting(){
+    Log.w(this, "Ending Meeting...")
+    let me = new MeetingEvent();
+    me.refEvent = this.eventStorageService.getLastEventId();;
+    me.meetingId = this.meetingId;
+    me.type = EventType.END;
+    this.sendEvent(me, (ackEventJson) => {
+      Log.d(this, "ACK for [" + me.type + "]: " + me.eventId)
+      this.checkAckAndStore(me, this.parseEventJson(ackEventJson))
+    });
+  }
 
-    let ackEvent = JSON.parse(ackEventJson)
+  checkAckAndStore(originalEvent : MeetingEvent, ackEvent: MeetingEvent){
+    let ackVerified = false;
     let ack = ackEvent as MeetingEvent
     // TODO: Verify signature
-
-    Log.d(this, "Check ACK");
-    Log.ds(this, ackEvent);
+    Log.d(this, "Checking ACK...");
     if (ackEvent.refEvent === originalEvent.eventId) { // Sanity check
       this.handleSpecialEvents(ackEvent);
       if (ack.type === EventType.ACK_ERR) { // We have an error ack
-        Log.e(this, "Error when sending event")
-        Log.d(this, ackEvent);
         this.error = true;
+        Log.e(this, "ACK is invalid!")
         let ac = ackEvent.content as AckContent
         if (ac.details["errorCode"]) {
-          this.errorString = "Error Sending Event! [" + ac.details["errorCode"] + "]"
-        } else {
-          this.errorString = "Error Sending Event!"
+          Log.e(this, "Error: " + ac.details["errorCode"])
         }
+        Log.ds(this, ackEvent);
       } else {
-        Log.i(this, "ACK checks out");
-        Log.w(this, "Got ack on private channel");
+        Log.i(this, "ACK is fine!");
         ackVerified = true;
       }
     } else { // ACK Event does not refer to Original event
-      Log.e(this, "Error when sending event! ref event mis-match!")
+      Log.e(this, "ACK is invalid! Ref event mis-match!")
       Log.ds(this, ackEvent);
       this.error = true;
-      this.errorString = "Server reply invalid"
     }
 
-    this.eventStorageService.storeEvent(originalEvent);
-    this.eventStorageService.storeErrorEvent(ackEvent);
+    if (ackVerified) {
+      this.eventStorageService.storeEvent(originalEvent);
+      this.eventStorageService.storeEvent(ackEvent);
+    } else {
+      this.eventStorageService.storeErrorEvent(originalEvent);
+      this.eventStorageService.storeErrorEvent(ackEvent);
+    }
+
     return ackVerified;
   }
 
@@ -305,6 +315,8 @@ export class MeetingHostPageComponent implements OnInit {
   // Sends Event using the mdtWsServer service
   // Automatically timestamps, signs and puts the correct 'by' field
   sendEvent(event, callback : Function){
+    Log.i(this, "Sending Event: ");
+    Log.ds(this, event)
     event.timestamp = this.getUnixTimetstamp();
     this.authService.signEvent(event)
     this.mdtWsServer.sendMeetingEvent(event, callback)
@@ -429,6 +441,9 @@ export class MeetingHostPageComponent implements OnInit {
     return EventAction[this.currentSelectedAction]
   }
 
+  parseEventJson(eventJson){
+    return JSON.parse(eventJson) as MeetingEvent
+  }
   
   start() {
     // Define the start meeting
@@ -439,35 +454,27 @@ export class MeetingHostPageComponent implements OnInit {
     startEvent.meetingId = this.meetingId;
     startEvent.type = EventType.START;
 
-    Log.d(this, "Sending Start Event")
+    Log.d(this, "Sending Start Event...")
     // Send start event
     this.sendEvent(startEvent, (ackEventJson) => {
-      Log.ds(this, ackEventJson)
-      let ackEvent = JSON.parse(ackEventJson)
-      if (ackEvent.type === EventType.ACK) { // Successfully started
+      let ackEvent = this.parseEventJson(ackEventJson);
+      let ok = this.checkAckAndStore(startEvent, ackEvent)
+      if (ok) {
         this.otp = content.otp
-        Log.i(this, "Meeting Started")
-
-        // Store the events
-        this.eventStorageService.storeEvent(startEvent);
-        this.eventStorageService.storeEvent(ackEvent);
+        Log.i(this, "Started Meeting Succesfully")
         this.join()
-      } else if (ackEvent.type === EventType.ACK_ERR) { // Error from Web server!
-        let ackContnet = ackEvent.content as ErrorAckContent
-        if (ackContnet.errorCode === EventStreamError.MEETING_ALREADY_STARTED) {
-          // Store the events as errors
-          this.eventStorageService.storeErrorEvent(startEvent);
-          this.eventStorageService.storeErrorEvent(ackEvent);
-          Log.i(this, "Meeting already started")
-          if (ackContnet.details["otp"]) {
-            this.otp = ackContnet.details["otp"];
-            Log.i(this, "Using OTP: " + this.otp)
+      } else {
+        let ac = ackEvent.content as AckContent
+        if (ac.details["errorCode"] === EventStreamError.MEETING_ALREADY_STARTED) {
+          Log.i(this, "Meeting already started...")
+          if (ac.details["otp"]) {
+            this.otp = ac.details["otp"];
+            Log.i(this, "Using Provided OTP: " + this.otp)
           } else {
             Log.e(this, "Meeting started but not otp found ERR_ACK contents")
           }
         } else {
           Log.e(this, "Error sending start event!")
-          Log.ds(this, ackEvent)
         }
       }
     })
@@ -482,27 +489,39 @@ export class MeetingHostPageComponent implements OnInit {
     joinEvent.meetingId = this.meetingId;
     joinEvent.type = EventType.JOIN;
 
+    Log.d(this, "Sending Join Event...")
     // Send the join event
     this.sendEvent(joinEvent, (ackEventJson) => {
-      Log.d(this, "Send ack!")
-      Log.ds(this, ackEventJson)
-      let ackEvent = JSON.parse(ackEventJson) as MeetingEvent
-      Log.d(this, EventType.ACK_JOIN)
-      if (ackEvent.type === EventType.ACK_JOIN) { // Successfully joined
-        // Store the events
-        this.eventStorageService.storeEvent(joinEvent);
-        this.eventStorageService.storeEvent(ackEvent);
-        let ackContent = ackEvent.content as AckContent
-        if (ackContent.details["startEvent"]) {
-          this.startEvent = JSON.parse(ackContent.details["startEvent"]) as MeetingEvent
-          Log.d(this, "Got start event from ACK");
-          Log.ds(this, this.startEvent);
-          this.eventStorageService.storeEvent(this.startEvent);
-          this.loading = false;
+
+      let ackEvent = JSON.parse(ackEventJson)
+      let ok = this.checkAckAndStore(joinEvent, ackEvent)
+
+      if (ok) { // Successfully joined
+        if (ackEvent.type === EventType.ACK_JOIN) {
+          Log.i(this, "JOINED Meeting Succesfully")
+          Log.d(this, "Parsing the start event from ACL_JOIN")
+
+          let ac = ackEvent.content as AckContent
+          if (ac.details["startEvent"]) {
+            this.startEvent = this.parseEventJson(ac.details["startEvent"])
+            Log.d(this, "Got start event from ACK_JOIN");
+            Log.ds(this, this.startEvent);
+
+            // Manually store the start event
+            this.eventStorageService.storeEvent(this.startEvent);
+
+            // Set Loading to false
+            this.loading = false;
         } else {
-          Log.e(this, "No Start Event after joined!")
+          Log.e(this, "No Start Event found in  ACK_JOIN!")
           Log.ds(this, ackEvent)
         }
+
+        } else { // Should never happen!
+          Log.e(this, "ACK for JOIN was not of type ACK_JOIN!!!")
+        }
+
+        
       } else if (ackEvent.type === EventType.ACK_ERR) { // Error from Web server!
 
         // Store the events as errors

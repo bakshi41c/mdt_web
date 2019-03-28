@@ -33,6 +33,9 @@ export class MeetingListPageComponent implements OnInit {
     this.router.navigate(['/meeting', meeting._id, "host"])
   }
 
+  newMeetingClicked(){
+    this.router.navigate(['/meeting', "create"])
+  } 
 
   showMeetings(){
     this.mdtServerService.getMeetings()
