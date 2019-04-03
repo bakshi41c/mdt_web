@@ -1,10 +1,10 @@
 .login-form {
     position:absolute;
-    width:150px;
+    width:350px;
     top:50%;
     right:0;
     left:50%;
-    margin: -50px 0 0 -150px;
+    margin: -150px 0 0 -150px;
 }
 
 #inpt_username {
@@ -23,4 +23,14 @@
 #errorText {
     text-align: center;
     display: block !important;
+}
+
+#qrCodeCanvas {
+    margin-left: 50px;
+}
+
+#loginHeader{
+    color: white;
+    text-align: center;
+    margin-left: -50px;
 }

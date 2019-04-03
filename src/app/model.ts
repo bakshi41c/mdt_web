@@ -7,6 +7,7 @@ export class Meeting {
     title: string = "Untitled meeting"
     description : string = "No description"
     host : string;
+    started : boolean = false;
 
     public static parseMeeting(object : any) : Meeting{
         let meeting = new Meeting()
@@ -108,10 +109,14 @@ export class AckContent extends Content {
 
 export class StartContent extends Content { 
     otp : string;
+    key : string;
+    sig : string;
 }
 
 export class JoinContent extends Content { 
     otp : string;
+    key : string;
+    sig : string;
 }
 
 export class PollContent extends Content { 
