@@ -18,6 +18,8 @@ export class Meeting {
         meeting.staff = object.staff
         meeting.title = object.title
         meeting.description = object.description
+        meeting.host = object.host
+        meeting.started = object.started
         return meeting
     }
 }
@@ -199,8 +201,30 @@ export enum EventAction{
     DISCUSS,
     PDC,
 
-    // END = "e",
-    // LEAVE = "4",
+    // END,
+    // LEAVE,
     
     UNKNOWN,
+}
+
+export class DeeIdUId {
+    private type : 'uID'
+    uID: string
+}
+
+export class DeeIdLoginSig {
+    private type : string = 'loginSig'
+    uID: string
+    wsURL: string
+    data: string
+}
+
+export class DeeIdLoginSigSigned {
+    private type : string = 'loginSigSigned'
+    uID: string
+    expirytime: string
+    deeID : string
+    data: string
+    msg: string
+    signature: string
 }

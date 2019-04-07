@@ -22,7 +22,7 @@ export class LoginPageComponent implements OnInit {
   login(){
     let ok = this.authService.login(
       (data) => {
-        Log.d(this, "Showing QR Code for: " + data)
+        Log.d(this, "Showing QR Code")
         this.showQRCode(data)
       },
       (success) => {
@@ -31,6 +31,7 @@ export class LoginPageComponent implements OnInit {
           this.router.navigate(['/meeting']);
         } else {
           this.error = true;
+          this.errorString = "Error Logging in! Please refresh and try again"
         }
       }
     )

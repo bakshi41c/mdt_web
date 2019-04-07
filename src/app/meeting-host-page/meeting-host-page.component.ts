@@ -6,6 +6,7 @@ import { MdtServerService } from '../mdt-server.service';
 import { EventsStorageService } from '../events-storage.service';
 import { AuthService } from '../auth.service';
 import { ActivatedRoute } from "@angular/router"
+import { Router } from '@angular/router';
 
 import { Log } from '../logger';
 
@@ -25,6 +26,7 @@ export class MeetingHostPageComponent implements AfterViewInit {
   eventIds = []; // Events we are displaying
   currentPatientDisucussion: Patient = new Patient(); // The current patient under discussion, empty patient object if none
   currentSelectedAction = EventAction.UNKNOWN; // The view selected on the right panel (based on action selected)
+  hosting = false;
 
   // Using ViewChildren insted of ViewChild because of *ngIf, also the reason why we use AfterViewInit instead of OnInit
   @ViewChildren('pollResultPanel') 
@@ -62,7 +64,7 @@ export class MeetingHostPageComponent implements AfterViewInit {
 
   constructor(private authService: AuthService, private mdtWsServer: MdtServerWsService,
      private mdtServerService: MdtServerService, private eventStorageService: EventsStorageService,
-     private activatedRoute: ActivatedRoute) { }
+     private activatedRoute: ActivatedRoute, public router: Router) { }
 
   ngAfterViewInit() {
     // Getting the reference for pollResultComponent for the draw() function
@@ -73,6 +75,7 @@ export class MeetingHostPageComponent implements AfterViewInit {
 
     this.loading = true;
     this.meetingId =  this.activatedRoute.snapshot.url[1].toString()
+    this.hosting = this.activatedRoute.snapshot.url[2].toString() == 'host'
     Log.d(this, "Hosting meetingId: " + this.meetingId)
     this.mdtWsServer.connect();
     this.setupWebSocketListener();
@@ -89,7 +92,13 @@ export class MeetingHostPageComponent implements AfterViewInit {
         // this.loading = false;
         
         // Start the meeting
-        this.start();
+        if (this.hosting){
+          this.start();
+        } else {
+          let otp = prompt("Please enter the meeting OTP", "");
+          this.otp = otp;
+          this.join
+        }
       },
       (err) => {
         Log.e(this, "ERROR: Fetching Meeting " + this.meetingId)
@@ -478,10 +487,13 @@ export class MeetingHostPageComponent implements AfterViewInit {
             this.otp = ac.details["otp"];
             Log.i(this, "Using Provided OTP: " + this.otp)
           } else {
-            Log.e(this, "Meeting started but not otp found ERR_ACK contents")
+            Log.e(this, "Meeting started but not otp found ERR_ACK contents");
+            this.errorPromptAndNaviage('Meeting already started!')
           }
         } else {
           Log.e(this, "Error sending start event!")
+          Log.ds(this, ac)
+          this.errorPromptAndNaviage('Error starting the meeting')
         }
       }
     })
@@ -519,25 +531,28 @@ export class MeetingHostPageComponent implements AfterViewInit {
 
             // Set Loading to false
             this.loading = false;
-        } else {
-          Log.e(this, "No Start Event found in  ACK_JOIN!")
-          Log.ds(this, ackEvent)
-        }
-
+          } else {
+            Log.ds(this, ackEvent)
+            this.errorPromptAndNaviage('Error joining the meeting, please try again.')
+          }
         } else { // Should never happen!
           Log.e(this, "ACK for JOIN was not of type ACK_JOIN!!!")
+          this.errorPromptAndNaviage('Error joining the meeting, please try again.')
         }
-
-        
-      } else if (ackEvent.type === EventType.ACK_ERR) { // Error from Web server!
-
+      } else if (ackEvent.type === EventType.ACK_ERR) { // Error from WS server!
         // Store the events as errors
         this.eventStorageService.storeErrorEvent(joinEvent);
         this.eventStorageService.storeErrorEvent(ackEvent);
         Log.e(this, "Error sending JOIN event")
         Log.ds(this, ackEvent)
+        this.errorPromptAndNaviage('Error joining the meeting, please make sure the OTP is correct.')
       }
     })
+  }
+
+  errorPromptAndNaviage(msg) {
+    alert(msg);
+    this.router.navigate(['/meeting']);
   }
 
   genOTP() {

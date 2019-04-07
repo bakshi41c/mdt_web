@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MdtServerService } from '../mdt-server.service';
 import { AuthService } from '../auth.service';
+import { Log } from '../logger';
 
 import { Meeting, Staff } from '../model';
 import {Router} from "@angular/router"
@@ -31,6 +32,10 @@ export class MeetingListPageComponent implements OnInit {
 
   startMeeting(meeting: Meeting){
     this.router.navigate(['/meeting', meeting._id, "host"])
+  }
+
+  joinMeeting(meeting: Meeting){
+    this.router.navigate(['/meeting', meeting._id, "join"])
   }
 
   newMeetingClicked(){

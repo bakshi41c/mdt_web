@@ -17,6 +17,7 @@ export class MeetingPageComponent implements OnInit {
   newMeeting: boolean = false
   loading: boolean = true
   meeting: Meeting
+  loggedInStaff : Staff;
 
   showStaffListLoading = false;
   showPatientListLoading = false;
@@ -82,13 +83,13 @@ export class MeetingPageComponent implements OnInit {
     this.loading = true;
     Log.dr(this, this.activatedRoute.snapshot)
     let urlComponent = this.activatedRoute.snapshot.url[1].toString()
+    this.loggedInStaff = this.authService.getLoggedInStaff()
 
     this.newMeeting = urlComponent === "create";
 
     if (this.newMeeting) {
-
       this.meeting = new Meeting();
-      this.meeting.host = this.authService.getLoggedInStaff()._id
+      this.meeting.host = this.loggedInStaff._id
       this.loading = false;
     } else {
       this.mdtServerService.getMeeting(urlComponent).subscribe(
@@ -121,6 +122,16 @@ export class MeetingPageComponent implements OnInit {
             return;
           }
           this.staffList = data as Staff[]
+
+          let currentStaffIndex = 0
+          this.staffList.some((staff, index) => {
+            if (staff._id === this.loggedInStaff._id) {
+              currentStaffIndex = index;
+              return true
+            }
+            return false
+          })
+          this.staffList.splice(currentStaffIndex, 1)
           // Log.ds(this,this.staffList)
           this.showStaffListLoading = false;
         });
@@ -188,6 +199,8 @@ export class MeetingPageComponent implements OnInit {
         }
       );
     } else {
+      Log.d(this, "Updataing with: ");
+      Log.ds(this, this.meeting);
       this.mdtServerService.updateMeeting(this.meeting).subscribe(
         res => {
           Log.i(this, "Meeting Updated Succesfully: " + res);

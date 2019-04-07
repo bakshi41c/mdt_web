@@ -6,8 +6,8 @@
   </div>
   <h3 id = "welcome_title" >Upcoming Meeting</h3>
   
-  <app-meeting-card *ngFor="let meeting of upcomingMeetings" (onStart) = "startMeeting($event)" (onEdit) = "viewMeeting($event)" [meeting] = meeting></app-meeting-card>
+  <app-meeting-card *ngFor="let meeting of upcomingMeetings" (onStart) = "startMeeting($event)" (onJoin)="joinMeeting($event)" (onEdit) = "viewMeeting($event)" [meeting] = meeting></app-meeting-card>
 
   <h3 id = "welcome_title" >Previous Meeting</h3>
-  <app-meeting-card *ngFor="let meeting of pastMeetings" (onView) = "viewMeeting($event)" [readOnly] = "true" [meeting] = meeting></app-meeting-card>
+  <app-meeting-card *ngFor="let meeting of pastMeetings" (onView) = "viewMeeting($event)" [historic] = "true" [meeting] = meeting></app-meeting-card>
 </div>

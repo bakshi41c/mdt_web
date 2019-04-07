@@ -1,5 +1,7 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { Meeting } from '../model';
+import { Meeting, Staff } from '../model';
+import { AuthService } from '../auth.service';
+import { Log } from '../logger';
 
 @Component({
   selector: 'app-meeting-card',
@@ -8,19 +10,34 @@ import { Meeting } from '../model';
 })
 export class MeetingCardComponent implements OnInit {
 
-  constructor() { }
+  constructor(private authService: AuthService) { }
   
   @Input() meeting: Meeting;
-  @Input() readOnly: boolean;
+  @Input() historic: boolean;
+  @Output() onJoin: EventEmitter<any> = new EventEmitter();
   @Output() onStart: EventEmitter<any> = new EventEmitter();
   @Output() onEdit: EventEmitter<any> = new EventEmitter();
   @Output() onView: EventEmitter<any> = new EventEmitter();
+  loggedInStaff : Staff;
+  isHost : boolean;
+  meetingAlreadyStarted: boolean;
 
   ngOnInit() {
+    this.loggedInStaff = this.authService.getLoggedInStaff();
+    this.isHost = this.meeting.host === this.loggedInStaff._id;
+    this.meetingAlreadyStarted = this.meeting.started;
+    Log.ds(this, this.meeting)
+    Log.ds(this, this.isHost)
+    Log.ds(this, this.meetingAlreadyStarted)
+
   }
 
   startBtnClicked(){
     this.onStart.emit(this.meeting);
+  }
+
+  joinBtnClicked(){
+    this.onJoin.emit(this.meeting);
   }
 
   editBtnClicked(){

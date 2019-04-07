@@ -37,6 +37,7 @@ const appRoutes: Routes = [
     { path: 'meeting/create', component: MeetingPageComponent },
     { path: 'meeting/:id', component: MeetingPageComponent },
     { path: 'meeting/:id/host', component: MeetingHostPageComponent },
+    { path: 'meeting/:id/join', component: MeetingHostPageComponent },
     { path: 'meeting', component: MeetingListPageComponent,},
   ]},
   { path: '',

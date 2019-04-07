@@ -20,12 +20,15 @@
                         </div>
                 </div>
             </div>
-            <div class="col-md-2" *ngIf="!readOnly">
-                <button type="button" (click) = "startBtnClicked()" class="btn btn-success meeting-action-btn" >Start</button>
-                <button type="button" (click) = "editBtnClicked()" class="btn btn-secondary meeting-action-btn">Edit</button>
+            <div class="col-md-2" *ngIf="!historic">
+                <button *ngIf="isHost && !meetingAlreadyStarted" type="button" (click) = "startBtnClicked()" class="btn btn-success meeting-action-btn" >Start</button>
+                <button *ngIf="!isHost || meetingAlreadyStarted" type="button" (click) = "joinBtnClicked()" class="btn btn-success meeting-action-btn" >Join</button>
+                <button *ngIf="isHost" type="button" (click) = "editBtnClicked()" class="btn btn-secondary meeting-action-btn">Edit</button>
+                <button *ngIf="!isHost" type="button" (click) = "viewBtnClicked()" class="btn btn-secondary meeting-action-btn">View</button>
+
             </div>
 
-            <div class="col-md-2" *ngIf="readOnly">
+            <div class="col-md-2" *ngIf="historic">
                 <button type="button" (click) = "viewBtnClicked()" class="btn btn-secondary meeting-action-btn" >View</button>
             </div>
              

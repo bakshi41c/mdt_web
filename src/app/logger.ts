@@ -9,10 +9,8 @@ export class Log {
 
     public static ds(c, o){
         if (!this.VERBOSE) { return; }
-        this.p(c, "Static Obj Print:", Level.SPECIAL)
         var cache = [];
-        console.log(
-            JSON.stringify(o, function(key, value) {
+        var objectPrint = JSON.stringify(o, function(key, value) {
             if (typeof value === 'object' && value !== null) {
                 if (cache.indexOf(value) !== -1) {
                     // Duplicate reference found
@@ -29,8 +27,11 @@ export class Log {
             }
             return value;
             })
-        )
+        
         cache = null;
+
+        this.p(c, "Static Obj Print: " + objectPrint, Level.SPECIAL)
+
     }
 
     public static dr(c, o){
