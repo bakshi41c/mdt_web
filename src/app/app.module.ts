@@ -28,6 +28,8 @@ import { EventCardComponent } from './event-card/event-card.component';
 import { CommentReplyComponent } from './comment-reply/comment-reply.component';
 import { PatientDataEditComponent } from './patient-data-edit/patient-data-edit.component';
 import { PollVoteComponent } from './poll-vote/poll-vote.component';
+import { ConfirmDeactivateGuard } from './meeting.guard';
+
 
 
 const appRoutes: Routes = [
@@ -36,8 +38,8 @@ const appRoutes: Routes = [
     // { path: 'meeting/card', component: EventCardComponent },
     { path: 'meeting/create', component: MeetingPageComponent },
     { path: 'meeting/:id', component: MeetingPageComponent },
-    { path: 'meeting/:id/host', component: MeetingHostPageComponent },
-    { path: 'meeting/:id/join', component: MeetingHostPageComponent },
+    { path: 'meeting/:id/host', component: MeetingHostPageComponent, canDeactivate:[ConfirmDeactivateGuard] },
+    { path: 'meeting/:id/join', component: MeetingHostPageComponent, canDeactivate:[ConfirmDeactivateGuard] },
     { path: 'meeting', component: MeetingListPageComponent,},
   ]},
   { path: '',
@@ -83,7 +85,7 @@ const appRoutes: Routes = [
     )
   ],
   providers: [
-    AuthorizeGuard
+    AuthorizeGuard, ConfirmDeactivateGuard
   ],
   bootstrap: [AppComponent]
 })

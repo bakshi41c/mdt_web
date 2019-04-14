@@ -1,11 +1,12 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Meeting, Staff, Patient } from '../model';
+import { Meeting, Staff, Patient, MeetingEvent, EventType } from '../model';
 import { MdtServerService } from '../mdt-server.service';
 import { NgxSmartModalService } from 'ngx-smart-modal';
 import { Router, ActivatedRoute } from "@angular/router"
 import { AuthService } from '../auth.service';
 
 import { Log } from '../logger';
+import { EventsStorageService } from '../events-storage.service';
 
 @Component({
   selector: 'app-meeting-page',
@@ -18,11 +19,15 @@ export class MeetingPageComponent implements OnInit {
   loading: boolean = true
   meeting: Meeting
   loggedInStaff : Staff;
-
+  eventIds  = new Set();
   showStaffListLoading = false;
   showPatientListLoading = false;
 
   staffList: Staff[] = [];
+
+    // Events that can't be displayed like ACKS
+  undisplayableEvents = [EventType.ACK, EventType.ACK_END, EventType.ACK_ERR, EventType.ACK_JOIN, EventType.ACK_POLL_END]
+
   staffModalSettings = {
     selectMode: 'multi',
     pager: {
@@ -63,7 +68,7 @@ export class MeetingPageComponent implements OnInit {
       age: {
         title: 'Age'
       },
-      hospital_number: {
+      hospitalNumber: {
         title: 'Hospital no.'
       }
     },
@@ -76,7 +81,7 @@ export class MeetingPageComponent implements OnInit {
   }
 
   constructor(private mdtServerService: MdtServerService, public ngxSmartModalService: NgxSmartModalService,
-    private router: Router, private activatedRoute: ActivatedRoute, private authService: AuthService,) {
+    private router: Router, private activatedRoute: ActivatedRoute, private authService: AuthService,private eventStorageService: EventsStorageService) {
   }
 
   ngOnInit() {
@@ -96,10 +101,15 @@ export class MeetingPageComponent implements OnInit {
         (data) => {
           this.meeting = data as Meeting;
           Log.ds(this, this.meeting)
+          this.readOnly = this.meeting.ended
+          if (this.readOnly) {
+            this.fetchAllMeetingEvents(this.meeting, ()=>{})
+          }
           this.loading = false;
         },
         (err) => {
           Log.e(this, "ERROR: Fetching Meeting " + urlComponent)
+          Log.e(this, err)
         })
     }
     // TODO: Case when create = false, and meetingId is null
@@ -231,6 +241,36 @@ export class MeetingPageComponent implements OnInit {
 
   navigateToMeetingListPage() {
     this.router.navigate(['/meeting']);
+  }
+
+  onEventCardAction(obj){
+    alert('This is in the past!');
+    // TODO: Implement vote counting and reliving the history
+  }
+
+  fetchAllMeetingEvents(meeting: Meeting, callback){
+    this.mdtServerService.getEventsForMeeting(meeting).subscribe(
+      (events : any) => {
+        if (Array.isArray(events)){
+          Log.ds(this, events)
+          for(let e of events) {
+            let event = e as MeetingEvent
+            this.eventStorageService.storeEvent(event);
+            if (!this.undisplayableEvents.includes(event.type)) { // Display it only if its something to display
+              this.eventIds.add(event._id)
+            }
+          }
+          callback(true)
+        } else {
+          Log.e(this, "Error fetching events: JSON is not an array")
+          Log.ds(this, events)
+          callback(false)
+        } 
+      },
+      (err) => {
+        Log.e(this, err)
+        callback(false)
+      })
   }
 
 }

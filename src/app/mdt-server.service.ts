@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Meeting, Staff, Patient, DeeIdLoginSigSigned } from './model';
 import { Log } from './logger';
-import { LocationStrategy } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +20,7 @@ export class MdtServerService {
   private ALL_PATIENTS_URL = this.serverUrl + "/patients"
   private PATIENTS_URL = this.serverUrl + "/patient"
   private LOGIN_URL = this.serverUrl + "/login"
+  private EVENTS_URL = this.serverUrl + "/events"
 
   private loginJwtToken;
 
@@ -85,5 +85,9 @@ export class MdtServerService {
 
   deleteMeeting(meeting: Meeting){
     return this.http.delete(this.MEETING_URL + "/" + meeting._id, {headers: this.getJwtHeader()});
+  }
+
+  getEventsForMeeting(meeting: Meeting){
+    return this.http.get(this.EVENTS_URL + "/" + meeting._id, {headers: this.getJwtHeader()});
   }
 }

@@ -8,7 +8,9 @@
   <h4>Date and Time: &nbsp;</h4><p>{{meeting.date}}</p>
 
   <h4>OTP Code: &nbsp; {{otp}}</h4>
-  <button (click)="endMeeting()" type="button" class="btn btn-danger">End Meeting</button>
+  <button *ngIf="isHost" (click)="endMeeting()" type="button" class="btn btn-danger">End Meeting</button>
+  <button *ngIf="!isHost" (click)="leaveMeeting()" type="button" class="btn btn-danger">Leave Meeting</button>
+
   <hr>
   <div class="container">
     <div class="row">

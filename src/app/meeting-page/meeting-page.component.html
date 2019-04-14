@@ -11,37 +11,49 @@
   <input [owlDateTime]="dt" [owlDateTimeTrigger]="dt" [(ngModel)] = "meeting.date">
   <owl-date-time #dt></owl-date-time>
 
-  <button type="button" class="btn btn-primary btn-lg btn-block" (click)="patientBtnClicked()">Add Patients <span *ngIf="meeting.patients.length > 0"> &nbsp;&nbsp;({{meeting.patients.length}} added)</span></button>
+  <button type="button" class="btn btn-primary btn-lg btn-block" (click)="patientBtnClicked()">{{readOnly ? 'View Patients' : 'Add Patients'}} <span *ngIf="meeting.patients.length > 0"> &nbsp;&nbsp;({{meeting.patients.length}} added)</span></button>
 
   <ngx-smart-modal id="patientAddModal" [customClass]="'wide-modal'"  #patientAddModal identifier="patientAddModal">
-    <h1>Select Patients</h1>
     <app-loading-spinner *ngIf="showPatientListLoading" class="loading-spinner"  ></app-loading-spinner>
-    <app-list-filter-select *ngIf="!showPatientListLoading" (done) = "patientAddDone($event)" [doneButtonTitle] = "'Add Patients'" [settings] = "patientModalSettings" [data]="patientList"></app-list-filter-select>
+    <app-list-filter-select *ngIf="!showPatientListLoading" (done) = "patientAddDone($event)" [doneButtonTitle] = "readOnly ? 'View Patients' : 'Add Patients'" [settings] = "patientModalSettings" [data]="patientList"></app-list-filter-select>
     <button class="btn btn-secondary" (click)="patientAddModal.close()">Close</button>
   </ngx-smart-modal>
 
-  <button type="button" class="btn btn-primary btn-lg btn-block" (click)="staffBtnClicked()">Add Staff <span *ngIf="meeting.staff.length > 0"> &nbsp;&nbsp;({{meeting.staff.length}} added)</span></button>
+  <button type="button" class="btn btn-primary btn-lg btn-block" (click)="staffBtnClicked()">{{readOnly ? 'View Staff' : 'Add Staff'}} <span *ngIf="meeting.staff.length > 0"> &nbsp;&nbsp;({{meeting.staff.length}} added)</span></button>
 
   <ngx-smart-modal id="staffAddModal" [customClass]="'wide-modal'"  #staffAddModal identifier="staffAddModal">
-    <h1>Select Staff</h1>
     <app-loading-spinner class="loading-spinner" *ngIf="showStaffListLoading" ></app-loading-spinner>
-    <app-list-filter-select *ngIf="!showStaffListLoading" (done) = "staffAddDone($event)" [title] = "'Select Staff'" [doneButtonTitle] = "'Add Staff'" [settings] = "staffModalSettings" [data]="staffList"  ></app-list-filter-select>
+    <app-list-filter-select *ngIf="!showStaffListLoading" (done) = "staffAddDone($event)" [title] = "'Meeting Staff'" [doneButtonTitle] = "readOnly ? 'View Staff' : 'Add Staff'" [settings] = "staffModalSettings" [data]="staffList"  ></app-list-filter-select>
     <button class="btn btn-secondary" (click)="staffAddModal.close()">Close</button>
   </ngx-smart-modal>
   
-  <div *ngIf="newMeeting">
-    <button type="button" id="btn_new_meeting" class="btn btn-success" (click)="saveButtonClicked()">Create</button>
-    <button type="button" id="btn_new_meeting" class="btn btn-secondary" (click)="navigateToMeetingListPage()">Cancel</button>
-  </div>
+  <div *ngIf="!readOnly" >
+    <div *ngIf="newMeeting">
+      <button type="button" id="btn_new_meeting" class="btn btn-success" (click)="saveButtonClicked()">Create</button>
+      <button type="button" id="btn_new_meeting" class="btn btn-secondary" (click)="navigateToMeetingListPage()">Cancel</button>
+    </div>
 
-  <div *ngIf="!newMeeting">
-    <button type="button" id="btn_new_meeting" class="btn btn-success" (click)="saveButtonClicked()">Save</button>
-    <button type="button" id="btn_new_meeting" class="btn btn-secondary" (click)="navigateToMeetingListPage()">Cancel</button>
-    <button type="button" id="btn_new_meeting" class="btn btn-danger" (click)="deleteButtonClicked()">Delete</button>
+    <div *ngIf="!newMeeting">
+      <button type="button" id="btn_new_meeting" class="btn btn-success" (click)="saveButtonClicked()">Save</button>
+      <button type="button" id="btn_new_meeting" class="btn btn-secondary" (click)="navigateToMeetingListPage()">Cancel</button>
+      <button type="button" id="btn_new_meeting" class="btn btn-danger" (click)="deleteButtonClicked()">Delete</button>
+    </div>
   </div>
   
   <div *ngIf="loading" class="translucent-screen">
     <app-loading-spinner class="centre-fixed"></app-loading-spinner>
   </div>
 
+  <div *ngIf="readOnly">
+    <h5>Events</h5>
+    <div class="container">
+        <div class="row">
+          <div class="col-md-8 center-block" >
+              <div id= "eventStream" class="container">
+                <app-event-card (onAction)="onEventCardAction($event)" *ngFor="let eventId of eventIds" [eventId]="eventId"></app-event-card>
+              </div>
+          </div>
+        </div>
+      </div>
+  </div>
 </div>

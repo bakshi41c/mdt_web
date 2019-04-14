@@ -10,11 +10,14 @@
     </div>
 
     <img src="{{avatar}}" [ngClass]="{'avatar': !slim, 'avatar-slim': slim}">
+    <h5 *ngIf="!slim" id="nameLable">{{staffName}}</h5>
     <h5 [ngClass]="{'card-text': !slim, 'card-text-slim': slim}">{{title}}</h5>
+    <a (click)="rawEventButtonClicked()" href="javascript:void(0)" id="rawEventBtn" title="Click to copy Raw Event!" >&lt;copy&gt;</a>
+    <a *ngIf="grayLink" (click)="grayLinkClicked()" href="javascript:void(0)" id="grayLinkButton" >{{grayLinkTitle}}</a>
     <div *ngIf="!popup" [ngClass]="{'card-actions': !slim, 'card-actions-slim': slim}">
       <a (click)="disagreeClicked()" href="javascript:void(0)" id="disagreeBtn" class="card-link">Disagree</a>
-      <a (click)="btnTwoClicked()" *ngIf="buttonTwo" id="btn2" href="javascript:void(0)" class="btn btn-danger">{{buttonTwoTitle}}</a>
-      <a (click)="btnOneClicked()" *ngIf="button" id="btn1" href="javascript:void(0)" class="btn btn-primary">{{buttonTitle}}</a>
+      <a [ngClass]="btnTwoType" (click)="btnTwoClicked()" *ngIf="buttonTwo" id="btn2" href="javascript:void(0)">{{buttonTwoTitle}}</a>
+      <a [ngClass]="btnOneType" (click)="btnOneClicked()" *ngIf="button" id="btn1" href="javascript:void(0)">{{buttonTitle}}</a>
     </div>
   </div>
 </div>

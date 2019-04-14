@@ -7,3 +7,17 @@
 .text-box {
     color: black;
 }
+
+
+#eventStream {
+    width:auto;
+    overflow-y: auto;
+    height: 650px;
+    -webkit-box-shadow: inset 0px 0px 17px -8px rgba(79,79,79,1);
+    -moz-box-shadow: inset 0px 0px 17px -8px rgba(79,79,79,1);
+    box-shadow: inset 0px 0px 17px -8px rgba(79,79,79,1)
+  }
+  
+  #eventStream{
+    padding: 10px;
+  }

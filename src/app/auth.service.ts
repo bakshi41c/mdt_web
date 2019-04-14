@@ -5,6 +5,7 @@ import { Log } from './logger';
 import * as bencodejs from 'bencode-js'
 import * as jssha256 from 'js-sha256'
 import Web3 from 'web3';
+import ethCrypto from 'eth-crypto';
 import { Account } from 'web3-eth-accounts/types';
 
 @Injectable({
@@ -23,7 +24,8 @@ export class AuthService {
   sessionAccount : Account = null // This is the eth Account that gets setup when logged in, used mainly for singning for meetings
   serverPublicAddress : string = '0x1c0b2f7a73ecbf7ce694887020dbcbaaa2e126f7'
   recieveduId = false;
-  deeIdLoginSig = new DeeIdLoginSig() // declaring it here so we can access it during loginSigSigned event
+  deeIdLoginSig = new DeeIdLoginSig() // declaring it here so we can access it larer
+  deeIdLoginSigSigned : DeeIdLoginSigSigned; // declaring it here so we can access it later
 
   // sample_ack_event =  {"by": "0x1c0b2f7a73ecbf7ce694887020dbcbaaa2e126f7", "refEvent": "007a2cd2944e39a5b46747749c8d648354809273513d59d0c0d4414120174f8515b61b70eec21d", "timestamp": 41654654021, "meetingId": "da9ff03c5e0abea12c2f1dc09a5a58accdb51da1c58950ad974", "type": "ack", "content": {"otp": "5123"}, "eventId": "0xdc8f17983602dd1e83251b3123016ddf8668e6cc26a12bca138c270df37f000054ee362fcb9962a962423571691d4171ebd8be7f331c339f937aa60853b5e6431c"}
 
@@ -43,6 +45,25 @@ export class AuthService {
 
   getLoggedInStaff() {
     return this.staff;
+  }
+
+  async encryptUsingKey(key : string, msg : string) {
+    let encryptedData = await ethCrypto.encryptWithPublicKey(key, msg);
+    let encryptedString = ethCrypto.cipher.stringify(encryptedData)
+    return encryptedString
+  }
+
+  async decryptUsingKey(key : string, cipherText : string) {
+    let encryptedData = ethCrypto.cipher.parse(cipherText)
+    let decryptedString = await ethCrypto.decryptWithPrivateKey(key, encryptedData);
+    return decryptedString;
+  }
+
+  generateNewEncyrptionKeyPair() : string[] {
+    let newKey= ethCrypto.createIdentity();;
+    
+    Log.d(this, "New Key Pair: " + newKey.publicKey + ", #######, " + newKey.privateKey)
+    return [newKey.publicKey, newKey.privateKey]  // substring removed 0x
   }
 
   init(){
@@ -129,12 +150,16 @@ export class AuthService {
     event.by= this.staff._id
     let eventJson = JSON.stringify(event);
     let eventCopy = JSON.parse(eventJson);
-    delete eventCopy.eventId;
+    delete eventCopy._id;
     delete eventCopy.__proto__;
     let eventBencode = bencodejs.encode(eventCopy)
     let signature = this.sessionAccount.sign(eventBencode)
-    event.eventId = signature.signature;
+    event._id = signature.signature;
     return event
+  }
+
+  getSessionKey(){
+    return this.sessionAccount.address
   }
 
   // signSample() {
@@ -159,8 +184,8 @@ export class AuthService {
   verifySignature(event: MeetingEvent, verificationAddress : string, callback: Function) {
     let eventJson = JSON.stringify(event);
     let eventCopy = JSON.parse(eventJson);
-    let signature = eventCopy.eventId
-    delete eventCopy.eventId;
+    let signature = eventCopy._id
+    delete eventCopy._id;
     
     let eventBencode = bencodejs.encode(eventCopy)
     this.web3.eth.personal.ecRecover(eventBencode, signature, (error, address) => {
@@ -191,11 +216,12 @@ export class AuthService {
       return
     }
     
-    let msg = deeIdLoginSigSigned.uID + deeIdLoginSigSigned.deeId + deeIdLoginSigSigned.expiryTime + deeIdLoginSigSigned.data;
+    let msg = deeIdLoginSigSigned.uID + deeIdLoginSigSigned.deeID + deeIdLoginSigSigned.expirytime + deeIdLoginSigSigned.data;
 
     this.web3.eth.personal.ecRecover(msg, deeIdLoginSigSigned.signature, (error, address) => {
       if (!error) {
         // Check smart contract here
+        this.deeIdLoginSigSigned = deeIdLoginSigSigned
         Log.i(this, "Successfully verified: " + address)
         callback(true);
       } else {

@@ -13,34 +13,56 @@ export class EventsStorageService {
 
   constructor() { }
 
-  events = new Array();
-  errorEvents = new Array();
+  events = {};
+  myErrorEvents = {};
   lastEventId : string;
 
-  getEvent(eventId : string) {
+  getEvent(eventId : string) : MeetingEvent {
     Log.w(this, "Fetching event " + eventId)
-    return Rx.Observable.create((observer) => {
-      if (eventId in this.events){
-        observer.next(this.events[eventId])
-        observer.complete()
-      } else {
-        observer.error("Event not found")
-      }
-    });
+    if (eventId in this.events) {
+      return this.events[eventId]
+    } else {
+      Log.e(this, "Event not found!:  " + eventId)
+      return null
+    }
   }
+
 
   getLastEventId(){
     return this.lastEventId;
   }
 
   storeEvent(event : MeetingEvent) {
-    Log.w(this, "Storing event " + event.eventId)
-    this.events[event.eventId] = event;
-    this.lastEventId = event.eventId;
+    Log.w(this, "Storing event " + event._id)
+    this.events[event._id] = event;
+    this.lastEventId = event._id;
   }
 
   storeErrorEvent(event : MeetingEvent) {
-    Log.w(this, "Storing error event " + event.eventId)
-    this.errorEvents[event.eventId] = event;
+    Log.w(this, "Storing error event " + event._id)
+    this.myErrorEvents[event._id] = event;
   }
+
+  clearAll(){
+    this.events = {};
+    this.myErrorEvents = {};
+    this.lastEventId = null;
+  }
+
+  async initiateDownloadAsync(){
+    Log.d(this, "Initiating download...")
+    Log.dr(this, this.events)
+    Log.ds(this, this.events)
+
+    let downloadData = {
+      'myErrorEvents' : this.myErrorEvents,
+      'events' : this.events
+    }
+    var data = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(downloadData, null, 4));
+    var downloader = document.createElement('a');
+    downloader.setAttribute('href', data);
+    downloader.setAttribute('download', 'events.json');
+    downloader.click();
+  }
+
 }

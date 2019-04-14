@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MdtServerService } from '../mdt-server.service';
 import { AuthService } from '../auth.service';
 import { Log } from '../logger';
+import { EventsStorageService } from '../events-storage.service';
 
 import { Meeting, Staff } from '../model';
 import {Router} from "@angular/router"
@@ -14,7 +15,8 @@ import {Router} from "@angular/router"
 })
 export class MeetingListPageComponent implements OnInit {
 
-  constructor(private mdtServerService: MdtServerService, private authService : AuthService, private router: Router) { }
+  constructor(private mdtServerService: MdtServerService, private authService : AuthService, 
+    private router: Router,  private eventStorageService: EventsStorageService, ) { }
 
   public upcomingMeetings : Meeting[] = [];
   public pastMeetings : Meeting[] = [];
@@ -23,6 +25,7 @@ export class MeetingListPageComponent implements OnInit {
   ngOnInit() {
     this.showMeetings();
     this.staff = this.authService.getLoggedInStaff()
+    this.eventStorageService.clearAll() // We clear any events that were there in the storage
   }
 
   // Called when user wants to view meeting
@@ -53,8 +56,7 @@ export class MeetingListPageComponent implements OnInit {
       
       data.forEach(element => {
         let meeting = Meeting.parseMeeting(element)
-        let todaysDate = new Date();
-        if (meeting.date > todaysDate) {
+        if (!meeting.ended) {
           this.upcomingMeetings.push(meeting)
         } else {
           this.pastMeetings.push(meeting)

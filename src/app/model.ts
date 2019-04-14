@@ -6,8 +6,11 @@ export class Meeting {
     staff: string[] = []
     title: string = "Untitled meeting"
     description : string = "No description"
-    host : string;
+    contractId : string = ""
+    host : string = "";
     started : boolean = false;
+    ended : boolean = false;
+    attendedStaff : string[] = []
 
     public static parseMeeting(object : any) : Meeting{
         let meeting = new Meeting()
@@ -20,6 +23,8 @@ export class Meeting {
         meeting.description = object.description
         meeting.host = object.host
         meeting.started = object.started
+        meeting.ended = object.ended
+        meeting.contractId = object.contractId
         return meeting
     }
 }
@@ -44,8 +49,8 @@ export class Patient {
         pat._id = object._id;
         pat.dob = new Date(object.dob)
         pat.name = object.name
-        pat.hospitalNumber = object.hospital_number
-        pat.infoflexLink = object.infoflex_link
+        pat.hospitalNumber = object.hospitalNumber
+        pat.infoflexLink = object.infoflexLink
         pat.age = pat.getAgeStringFromDob(); // Hack for now
         return pat
     }
@@ -89,42 +94,58 @@ export class PatientMeetingData {
 
 export class MeetingEvent{
     public by : string;
-    public eventId : string;
+    public _id : string;
     public refEvent: string;
     public meetingId : string;
     public timestamp : number;
     public type : EventType;
-    public content : Content;
+    public content : Content = {};
 }
 
 export class Content{    
 }
 
-export class ErrorAckContent extends Content {
+export class AckErrorContent extends Content {
     errorCode: EventStreamError
-    details : any
+    details : string
 }
 
-export class AckContent extends Content {
-    details : any
+export class AckJoinContent extends Content {
+    startEvent : MeetingEvent
+    joinEvents: MeetingEvent[]
+}
+
+export class AckPollEndContent extends Content {
+    votes : string[]
+}
+
+export class AckEndContent extends Content {
+    unReferencedEventIds : string[]
 }
 
 export class StartContent extends Content { 
     otp : string;
     key : string;
-    sig : string;
+    deeIDLoginSigSigned : DeeIdLoginSigSigned;
+    meeting : Meeting;
+
 }
 
 export class JoinContent extends Content { 
     otp : string;
     key : string;
-    sig : string;
+    deeIDLoginSigSigned : DeeIdLoginSigSigned;
 }
 
 export class PollContent extends Content { 
-    patient : string;
+    patient : string = "";
     question : string;
     options : string[];
+    votingKey: string;
+}
+
+export class PollEndContent extends Content { 
+    decryptKey : string
 }
 
 export class VoteContent extends Content { 
@@ -132,7 +153,7 @@ export class VoteContent extends Content {
 }
 
 export class CommentContent extends Content { 
-    patient : string;
+    patient : string = "";
     comment : string;
 }
 
@@ -166,6 +187,7 @@ export enum EventType{
     ACK_JOIN = "joinAck",
     ACK_POLL_END = "pollEndAck",
     ACK_ERR = "ackError",
+    ACK_END = "ackEnd",
     END = "end"
 }
 
@@ -186,8 +208,11 @@ export enum EventStreamError{
     INVALID_VOTE_OPTION = "invalid vote option",
     PATIENT_NOT_FOUND = "patient not found",
     MEETING_ALREADY_STARTED = "meeting already started",
-    ALREADY_VOTED = "already voted"
+    ALREADY_VOTED = "already voted",
+    BAD_SESSION_KEY_SIGNATURE = "bad session key signature",
+    SESSION_KEY_NOT_FOUND = "session key not found"
 }
+
 
 export enum EventAction{
     REPLY,
@@ -195,6 +220,9 @@ export enum EventAction{
     POLL_END,
     VIEW_RESULTS,
     VOTE,
+
+    VOTE_INCLUSION_CHECK,
+    SEE_VOTE,
 
     COMMENT,
     CREATE_POLL,
