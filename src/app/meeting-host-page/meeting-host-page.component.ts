@@ -28,7 +28,7 @@ export class MeetingHostPageComponent implements AfterViewInit {
   currentSelectedAction = EventAction.UNKNOWN; // The view selected on the right panel (based on action selected)
   hosting = false;  // Whether the user is hosting or joining (NOTE: a host can also join, e.g. page refresh)
   isHost = false; // Whether the user thats logged in is the host of the meeting
-  manuallyLeftMeeting = false;
+  manuallyLeftMeeting = false; // The meeting guard will check this flag to decide whether to prmpt user for leaving
 
   // Events that can't be displayed like ACKS
   undisplayableEvents = [EventType.ACK, EventType.ACK_END, EventType.ACK_ERR, EventType.ACK_JOIN, EventType.ACK_POLL_END]
@@ -302,7 +302,7 @@ export class MeetingHostPageComponent implements AfterViewInit {
     // TODO: Verify signature
     Log.d(this, "Checking ACK...");
     if (ackEvent.refEvent === originalEvent._id) { // Sanity check
-      this.handleSpecialEvents(ackEvent);
+      // this.handleSpecialEvents(ackEvent);
       if (ack.type === EventType.ACK_ERR) { // We have an error ack
         this.error = true;
         Log.e(this, "ACK is invalid!")
