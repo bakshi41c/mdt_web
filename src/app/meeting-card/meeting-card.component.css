@@ -16,10 +16,28 @@
 }
 
 .meeting-card {
-    max-width: 50rem
+    max-width: 50rem;
+    margin: auto;
+    -webkit-box-shadow: 1px 5px 24px -11px rgba(0,0,0,0.84);
+    -moz-box-shadow: 1px 5px 24px -11px rgba(0,0,0,0.84);
+    box-shadow: 1px 5px 24px -11px rgba(0,0,0,0.84);
 }
 
 .meeting-action-btn{
     width: 100px;
     margin-bottom: 10px;
+}
+
+.Blink {
+    animation: blinker 0.5s cubic-bezier(.5, 0, 1, 1) infinite alternate;  
+}
+
+@keyframes blinker {  
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+#blinker {
+    float:  right;
+    margin-top: -35px;
 }

@@ -29,6 +29,9 @@ import { CommentReplyComponent } from './comment-reply/comment-reply.component';
 import { PatientDataEditComponent } from './patient-data-edit/patient-data-edit.component';
 import { PollVoteComponent } from './poll-vote/poll-vote.component';
 import { ConfirmDeactivateGuard } from './meeting.guard';
+import { HeaderComponent } from './header/header.component';
+import { StaffCardComponent } from './staff-card/staff-card.component';
+import { PatientCardComponent } from './patient-card/patient-card.component';
 
 
 
@@ -41,6 +44,7 @@ const appRoutes: Routes = [
     { path: 'meeting/:id/host', component: MeetingHostPageComponent, canDeactivate:[ConfirmDeactivateGuard] },
     { path: 'meeting/:id/join', component: MeetingHostPageComponent, canDeactivate:[ConfirmDeactivateGuard] },
     { path: 'meeting', component: MeetingListPageComponent,},
+
   ]},
   { path: '',
     redirectTo: '/meeting',
@@ -68,6 +72,9 @@ const appRoutes: Routes = [
     CommentReplyComponent,
     PatientDataEditComponent,
     PollVoteComponent,
+    HeaderComponent,
+    StaffCardComponent,
+    PatientCardComponent,
   ],
   imports: [
     BrowserModule,

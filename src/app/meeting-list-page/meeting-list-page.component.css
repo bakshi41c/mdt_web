@@ -1,0 +1,22 @@
+#welcomeTitle {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    color: #737272;
+}
+
+#upcomingMeetingTitle{
+    margin-top: 30px;
+    margin-bottom: 30px;
+    color: #737272;
+}
+
+#previousMeetingTitle{
+    margin-top: 90px;
+    margin-bottom: 30px;
+    color: #737272;
+}
+
+#btnNewMeeting {
+    float: right;
+    margin-top: -20px;
+}

@@ -1,0 +1,24 @@
+#patientNameLable {
+    font-size: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+    margin-top: -2px;
+}
+
+#discussBtn{
+    float: right;
+    font-size: 15px !important;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    margin-top: -40px;
+}
+
+.card {
+    height: 60px;
+}
+
+.card-selected {
+    background: #f39c1254;
+}

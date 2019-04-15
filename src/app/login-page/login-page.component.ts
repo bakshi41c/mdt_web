@@ -23,6 +23,7 @@ export class LoginPageComponent implements OnInit {
     let ok = this.authService.login(
       (data) => {
         Log.d(this, "Showing QR Code")
+        Log.ds(this, data)
         this.showQRCode(data)
       },
       (success) => {

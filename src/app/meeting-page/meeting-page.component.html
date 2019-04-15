@@ -1,59 +1,66 @@
-<h2> Meeting</h2>
-<div *ngIf="!loading">
-  <label>Meeting title</label>
-  <input type="text" class="form-control text-box" id="titleInput" [(ngModel)] = "meeting.title" placeholder="Meeting Title" style="background-image: url(&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABHklEQVQ4EaVTO26DQBD1ohQWaS2lg9JybZ+AK7hNwx2oIoVf4UPQ0Lj1FdKktevIpel8AKNUkDcWMxpgSaIEaTVv3sx7uztiTdu2s/98DywOw3Dued4Who/M2aIx5lZV1aEsy0+qiwHELyi+Ytl0PQ69SxAxkWIA4RMRTdNsKE59juMcuZd6xIAFeZ6fGCdJ8kY4y7KAuTRNGd7jyEBXsdOPE3a0QGPsniOnnYMO67LgSQN9T41F2QGrQRRFCwyzoIF2qyBuKKbcOgPXdVeY9rMWgNsjf9ccYesJhk3f5dYT1HX9gR0LLQR30TnjkUEcx2uIuS4RnI+aj6sJR0AM8AaumPaM/rRehyWhXqbFAA9kh3/8/NvHxAYGAsZ/il8IalkCLBfNVAAAAABJRU5ErkJggg==&quot;); background-repeat: no-repeat; background-attachment: scroll; background-size: 16px 18px; background-position: 98% 50%; cursor: auto;">
-  <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
+<app-header></app-header>
+<div class="page-body">
+  <div *ngIf="!loading">
 
-  <label>Description</label>
-  <input type="text" class="form-control text-box" id="descriptionInput" [(ngModel)] = "meeting.description" placeholder="Meeting description" style="background-image: url(&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABHklEQVQ4EaVTO26DQBD1ohQWaS2lg9JybZ+AK7hNwx2oIoVf4UPQ0Lj1FdKktevIpel8AKNUkDcWMxpgSaIEaTVv3sx7uztiTdu2s/98DywOw3Dued4Who/M2aIx5lZV1aEsy0+qiwHELyi+Ytl0PQ69SxAxkWIA4RMRTdNsKE59juMcuZd6xIAFeZ6fGCdJ8kY4y7KAuTRNGd7jyEBXsdOPE3a0QGPsniOnnYMO67LgSQN9T41F2QGrQRRFCwyzoIF2qyBuKKbcOgPXdVeY9rMWgNsjf9ccYesJhk3f5dYT1HX9gR0LLQR30TnjkUEcx2uIuS4RnI+aj6sJR0AM8AaumPaM/rRehyWhXqbFAA9kh3/8/NvHxAYGAsZ/il8IalkCLBfNVAAAAABJRU5ErkJggg==&quot;); background-repeat: no-repeat; background-attachment: scroll; background-size: 16px 18px; background-position: 98% 50%; cursor: auto;">
-  
-  <label>Meeting Date/Time</label>
-  <input [owlDateTime]="dt" [owlDateTimeTrigger]="dt" [(ngModel)] = "meeting.date">
-  <owl-date-time #dt></owl-date-time>
+      <h3 id="pageTitle">{{newMeeting ? 'New Meeting' : 'View Meeting' }}</h3>
 
-  <button type="button" class="btn btn-primary btn-lg btn-block" (click)="patientBtnClicked()">{{readOnly ? 'View Patients' : 'Add Patients'}} <span *ngIf="meeting.patients.length > 0"> &nbsp;&nbsp;({{meeting.patients.length}} added)</span></button>
+      <label id="meetingTitleLable">Meeting title</label>
+      <input [disabled]="readOnly" type="text" class="form-control text-box" id="titleInput" [(ngModel)] = "meeting.title" placeholder="Meeting Title" style="background-image: url(&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABHklEQVQ4EaVTO26DQBD1ohQWaS2lg9JybZ+AK7hNwx2oIoVf4UPQ0Lj1FdKktevIpel8AKNUkDcWMxpgSaIEaTVv3sx7uztiTdu2s/98DywOw3Dued4Who/M2aIx5lZV1aEsy0+qiwHELyi+Ytl0PQ69SxAxkWIA4RMRTdNsKE59juMcuZd6xIAFeZ6fGCdJ8kY4y7KAuTRNGd7jyEBXsdOPE3a0QGPsniOnnYMO67LgSQN9T41F2QGrQRRFCwyzoIF2qyBuKKbcOgPXdVeY9rMWgNsjf9ccYesJhk3f5dYT1HX9gR0LLQR30TnjkUEcx2uIuS4RnI+aj6sJR0AM8AaumPaM/rRehyWhXqbFAA9kh3/8/NvHxAYGAsZ/il8IalkCLBfNVAAAAABJRU5ErkJggg==&quot;); background-repeat: no-repeat; background-attachment: scroll; background-size: 16px 18px; background-position: 98% 50%; cursor: auto;">
+    
+      <label id="descriptionLable">Description</label>
+      <input [disabled]="readOnly" type="text" class="form-control text-box" id="descriptionInput" [(ngModel)] = "meeting.description" placeholder="Meeting description" style="background-image: url(&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABHklEQVQ4EaVTO26DQBD1ohQWaS2lg9JybZ+AK7hNwx2oIoVf4UPQ0Lj1FdKktevIpel8AKNUkDcWMxpgSaIEaTVv3sx7uztiTdu2s/98DywOw3Dued4Who/M2aIx5lZV1aEsy0+qiwHELyi+Ytl0PQ69SxAxkWIA4RMRTdNsKE59juMcuZd6xIAFeZ6fGCdJ8kY4y7KAuTRNGd7jyEBXsdOPE3a0QGPsniOnnYMO67LgSQN9T41F2QGrQRRFCwyzoIF2qyBuKKbcOgPXdVeY9rMWgNsjf9ccYesJhk3f5dYT1HX9gR0LLQR30TnjkUEcx2uIuS4RnI+aj6sJR0AM8AaumPaM/rRehyWhXqbFAA9kh3/8/NvHxAYGAsZ/il8IalkCLBfNVAAAAABJRU5ErkJggg==&quot;); background-repeat: no-repeat; background-attachment: scroll; background-size: 16px 18px; background-position: 98% 50%; cursor: auto;">
+      
+      <label id="dateTimeLable">Meeting Date/Time:</label>
+      <input [disabled]="readOnly" [owlDateTime]="dt" [owlDateTimeTrigger]="dt" [(ngModel)] = "meeting.date">
+      <owl-date-time #dt></owl-date-time>
+      
+      <div class="select-btn-panel">
+        <button [disabled]="readOnly" type="button" class="btn btn-primary select-btn" (click)="patientBtnClicked()">{{readOnly ? 'View Patients' : '+ Add Patients'}} <span *ngIf="meeting.patients.length > 0"> &nbsp;&nbsp;({{meeting.patients.length}} added)</span></button>
+        <button [disabled]="readOnly" type="button" class="btn btn-primary select-btn" (click)="staffBtnClicked()">{{readOnly ? 'View Staff' : '+ Add Staff'}} <span *ngIf="meeting.staff.length > 0"> &nbsp;&nbsp;({{meeting.staff.length}} added)</span></button>
+      </div>
 
-  <ngx-smart-modal id="patientAddModal" [customClass]="'wide-modal'"  #patientAddModal identifier="patientAddModal">
-    <app-loading-spinner *ngIf="showPatientListLoading" class="loading-spinner"  ></app-loading-spinner>
-    <app-list-filter-select *ngIf="!showPatientListLoading" (done) = "patientAddDone($event)" [doneButtonTitle] = "readOnly ? 'View Patients' : 'Add Patients'" [settings] = "patientModalSettings" [data]="patientList"></app-list-filter-select>
-    <button class="btn btn-secondary" (click)="patientAddModal.close()">Close</button>
-  </ngx-smart-modal>
-
-  <button type="button" class="btn btn-primary btn-lg btn-block" (click)="staffBtnClicked()">{{readOnly ? 'View Staff' : 'Add Staff'}} <span *ngIf="meeting.staff.length > 0"> &nbsp;&nbsp;({{meeting.staff.length}} added)</span></button>
-
-  <ngx-smart-modal id="staffAddModal" [customClass]="'wide-modal'"  #staffAddModal identifier="staffAddModal">
-    <app-loading-spinner class="loading-spinner" *ngIf="showStaffListLoading" ></app-loading-spinner>
-    <app-list-filter-select *ngIf="!showStaffListLoading" (done) = "staffAddDone($event)" [title] = "'Meeting Staff'" [doneButtonTitle] = "readOnly ? 'View Staff' : 'Add Staff'" [settings] = "staffModalSettings" [data]="staffList"  ></app-list-filter-select>
-    <button class="btn btn-secondary" (click)="staffAddModal.close()">Close</button>
-  </ngx-smart-modal>
-  
-  <div *ngIf="!readOnly" >
-    <div *ngIf="newMeeting">
-      <button type="button" id="btn_new_meeting" class="btn btn-success" (click)="saveButtonClicked()">Create</button>
-      <button type="button" id="btn_new_meeting" class="btn btn-secondary" (click)="navigateToMeetingListPage()">Cancel</button>
-    </div>
-
-    <div *ngIf="!newMeeting">
-      <button type="button" id="btn_new_meeting" class="btn btn-success" (click)="saveButtonClicked()">Save</button>
-      <button type="button" id="btn_new_meeting" class="btn btn-secondary" (click)="navigateToMeetingListPage()">Cancel</button>
-      <button type="button" id="btn_new_meeting" class="btn btn-danger" (click)="deleteButtonClicked()">Delete</button>
-    </div>
-  </div>
-  
-  <div *ngIf="loading" class="translucent-screen">
-    <app-loading-spinner class="centre-fixed"></app-loading-spinner>
-  </div>
-
-  <div *ngIf="readOnly">
-    <h5>Events</h5>
-    <div class="container">
-        <div class="row">
-          <div class="col-md-8 center-block" >
-              <div id= "eventStream" class="container">
-                <app-event-card (onAction)="onEventCardAction($event)" *ngFor="let eventId of eventIds" [eventId]="eventId"></app-event-card>
-              </div>
-          </div>
+      <!-- Patient Select Modal -->
+      <ngx-smart-modal id="patientAddModal" [customClass]="'wide-modal'"  #patientAddModal identifier="patientAddModal">
+        <app-loading-spinner *ngIf="showPatientListLoading" class="loading-spinner"  ></app-loading-spinner>
+        <app-list-filter-select *ngIf="!showPatientListLoading" (done) = "patientAddDone($event)" [doneButtonTitle] = "readOnly ? 'View Patients' : 'Add Patients'" [settings] = "patientModalSettings" [data]="patientList"></app-list-filter-select>
+        <button class="btn btn-secondary" (click)="patientAddModal.close()">Close</button>
+      </ngx-smart-modal>
+      
+      <!-- Staff Select Modal -->
+      <ngx-smart-modal id="staffAddModal" [customClass]="'wide-modal'"  #staffAddModal identifier="staffAddModal">
+        <app-loading-spinner class="loading-spinner" *ngIf="showStaffListLoading" ></app-loading-spinner>
+        <app-list-filter-select *ngIf="!showStaffListLoading" (done) = "staffAddDone($event)" [title] = "'Meeting Staff'" [doneButtonTitle] = "readOnly ? 'View Staff' : 'Add Staff'" [settings] = "staffModalSettings" [data]="staffList"  ></app-list-filter-select>
+        <button class="btn btn-secondary" (click)="staffAddModal.close()">Close</button>
+      </ngx-smart-modal>
+      <hr>
+      <div *ngIf="!readOnly">
+        <div *ngIf="newMeeting" class="action-btn-panel">
+          <button type="button" class="btn btn-success action-btn" (click)="saveButtonClicked()">Create</button>
+          <button type="button" class="btn btn-secondary action-btn" (click)="navigateToMeetingListPage()">Cancel</button>
+        </div>
+    
+        <div *ngIf="!newMeeting" class="action-btn-panel">
+          <button type="button" class="btn btn-success action-btn" (click)="saveButtonClicked()">Save</button>
+          <button type="button" class="btn btn-secondary action-btn" (click)="navigateToMeetingListPage()">Cancel</button>
+          <button type="button" class="btn btn-danger action-btn" (click)="deleteButtonClicked()">Delete</button>
         </div>
       </div>
+      <div *ngIf="readOnly">
+        <h5>Events: </h5>
+        <div class="container">
+            <div class="row">
+              <div class="col-md-2 center-block" ></div>
+              <div class="col-md-8 center-block" >
+                  <div id= "eventStream" class="container">
+                    <app-event-card (onAction)="onEventCardAction($event)" *ngFor="let eventId of eventIds" [eventId]="eventId"></app-event-card>
+                  </div>
+              </div>
+              <div class="col-md-2 center-block" ></div>
+            </div>
+        </div>
+    </div>
+  </div>
+  <div *ngIf="loading" class="translucent-screen">
+      <app-loading-spinner class="centre-fixed"></app-loading-spinner>
   </div>
 </div>

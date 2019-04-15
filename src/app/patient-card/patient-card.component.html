@@ -1,0 +1,8 @@
+<div class="card" [ngClass]="discussedPatient._id === patient._id ? 'card-selected' : ''" >
+    <div class="card-body">
+      <p id="patientNameLable">{{patient.name}}</p>
+      <button *ngIf="discussedPatient._id !== patient._id" 
+              (click)="onDiscussClicked()" 
+              id="discussBtn" type="button" class="btn btn-outline-warning">Discuss</button>
+    </div>
+  </div>

@@ -15,6 +15,12 @@
     width: 150px;
 }
 
+#logo {
+    max-width: 300px;
+    margin-top: -160px;
+    margin-bottom: 80px;
+}
+
 #btn_login {
     display: block; 
     margin: 0 auto;
@@ -23,6 +29,7 @@
 #errorText {
     text-align: center;
     display: block !important;
+    margin-left: -25px
 }
 
 #qrCodeCanvas {
@@ -33,4 +40,8 @@
     color: white;
     text-align: center;
     margin-left: -50px;
+}
+
+.page-container { 
+    background-color: #2c3e50 !important;
 }

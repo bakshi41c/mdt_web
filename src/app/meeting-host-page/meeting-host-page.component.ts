@@ -21,7 +21,10 @@ export class MeetingHostPageComponent implements AfterViewInit {
   loading: boolean = true;
   otp: string = ""
   startEvent: MeetingEvent;
-  patients: any = new Array(); // Local cache for all patients in this meeting - dictionary for O(1) access 
+  patients: any = {}; // Local cache for all patients in this meeting - dictionary for O(1) access 
+  patientList: Patient[] = []; // Patients we are displaying for user, angular is not happy with object (patients)
+  joinedStaff= new Set() // Set of participant who are currently in meeting
+
   showPatientChangeSelect: boolean = false; // Used to determine when to show the dropdown for patient select
   eventIds = new Set(); // Events we are displaying
   currentPatientDisucussion: Patient = new Patient(); // The current patient under discussion, empty patient object if none
@@ -40,7 +43,7 @@ export class MeetingHostPageComponent implements AfterViewInit {
 
   private pollResultsComponent: PollResultsComponent;
 
-  pollEvents = new Array(); // Cache of all poll end events and their acks (which contain all the votes)
+  pollEvents = {}; // Cache of all poll end events and their acks (which contain all the votes)
 
   pollKeys = {} //  Stores voting keys for any polls created by the user
 
@@ -159,6 +162,7 @@ export class MeetingHostPageComponent implements AfterViewInit {
     this.sendEvent(me, (ackEventJson) => {
       this.checkAckAndStore(me, this.parseEventJson(ackEventJson))
     });
+    this.currentSelectedAction = EventAction.UNKNOWN;
   }
 
   createPollBtnClicked(content) {
@@ -178,6 +182,7 @@ export class MeetingHostPageComponent implements AfterViewInit {
     this.sendEvent(me, (ackEventJson) => {
       this.checkAckAndStore(me, this.parseEventJson(ackEventJson))
     });
+    this.currentSelectedAction = EventAction.UNKNOWN;
   }
 
   patientDataSaveBtnClicked(content){
@@ -192,6 +197,7 @@ export class MeetingHostPageComponent implements AfterViewInit {
     this.sendEvent(me, (ackEventJson) => {
       this.checkAckAndStore(me, this.parseEventJson(ackEventJson))
     });
+    this.currentSelectedAction = EventAction.UNKNOWN;
   }
 
   async voteButtonClicked(content){
@@ -212,6 +218,7 @@ export class MeetingHostPageComponent implements AfterViewInit {
       let ok = this.checkAckAndStore(me, this.parseEventJson(ackEventJson))
       if (ok) this.pollEvents[me.refEvent].voted = true; 
     });
+    this.currentSelectedAction = EventAction.UNKNOWN;
   }
 
   pdiscussionChange(patient_id) {
@@ -340,6 +347,16 @@ export class MeetingHostPageComponent implements AfterViewInit {
       Log.i(this, "Handling special event DISCUSSION")
       let dc = event.content as DiscussionContent
       this.currentPatientDisucussion = this.patients[dc.patient];
+    }
+
+    if (event.type === EventType.JOIN) {
+      Log.i(this, "Handling special event JOIN")
+      this.joinedStaff.add(event.by)
+    }
+
+    if (event.type === EventType.LEAVE) {
+      Log.i(this, "Handling special event LEAVE")
+      this.joinedStaff.delete(event.by)
     }
 
     if (event.type === EventType.POLL) {
@@ -784,6 +801,7 @@ export class MeetingHostPageComponent implements AfterViewInit {
         this.mdtServerService.getPatient(patientId).subscribe(
           (data) => {
             this.patients[patientId] = Patient.parsePatient(data);
+            this.patientList.push(this.patients[patientId]);
           },
           (error) => {
             Log.e(this, "Error fetching patient: " + patientId)

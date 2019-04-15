@@ -9,12 +9,71 @@
 #eventStream {
   width:auto;
   overflow-y: auto;
-  height: 650px;
-  -webkit-box-shadow: inset 0px 0px 17px -8px rgba(79,79,79,1);
-  -moz-box-shadow: inset 0px 0px 17px -8px rgba(79,79,79,1);
-  box-shadow: inset 0px 0px 17px -8px rgba(79,79,79,1)
+  max-height: 75vh;
+  padding: 10px;
+  -webkit-box-shadow: inset 0px 0px 3px 0px rgba(0,0,0,0.46);
+  -moz-box-shadow: inset 0px 0px 3px 0px rgba(0,0,0,0.46);
+  box-shadow: inset 0px 0px 3px 0px rgba(0,0,0,0.46);
 }
 
-#eventStream{
+#patientCards {
+  width:auto;
+  overflow-y: auto;
+  height: 32vh;
   padding: 10px;
+  -webkit-box-shadow: inset 0px 0px 3px 0px rgba(0,0,0,0.46);
+  -moz-box-shadow: inset 0px 0px 3px 0px rgba(0,0,0,0.46);
+  box-shadow: inset 0px 0px 3px 0px rgba(0,0,0,0.46);
+}
+
+#staffCards {
+  width:auto;
+  overflow-y: auto;
+  height: 30vh;
+  padding: 10px;
+  -webkit-box-shadow: inset 0px 0px 3px 0px rgba(0,0,0,0.46);
+  -moz-box-shadow: inset 0px 0px 3px 0px rgba(0,0,0,0.46);
+  box-shadow: inset 0px 0px 3px 0px rgba(0,0,0,0.46);
+}
+
+#blinkerLable {
+  margin-top: 10px;
+}
+
+#meetingTitleLable {
+  margin-top: 20px;
+  text-align: center;
+}
+
+#meetingDescriptionLable {
+  margin-top: 5px;
+  text-align: center;
+}
+
+#otp {
+  font-size: 2.5em;
+}
+
+#otpValue {
+  color: #18bc9c
+}
+
+.title-strip {
+  margin-left: 10%;
+  margin-right: 10%;
+  height: 11vh;
+}
+
+.leave-btn {
+  /* float: right; */
+}
+
+.otp-col{
+  text-align: right;
+}
+
+#eventsPanel {
+  margin-left: 10%;
+  margin-right: 10%;
+  z-index: 50;
 }

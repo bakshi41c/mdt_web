@@ -18,7 +18,7 @@ export class AuthService {
   web3 : Web3 = null;
   deeIdWsConnection = null;
   deeIdServerAddress = "ws://127.0.0.1:5678/"
-  deeIdServerPublicAddress = "https://ferme.serveo.net" // TODO: Remove when deploying, only needed for development
+  deeIdServerPublicAddress = "https://f6337031.ngrok.io" // TODO: Remove when deploying, only needed for development
   deeIdSessionId = null
   signature = null
   sessionAccount : Account = null // This is the eth Account that gets setup when logged in, used mainly for singning for meetings
@@ -60,14 +60,14 @@ export class AuthService {
   }
 
   generateNewEncyrptionKeyPair() : string[] {
-    let newKey= ethCrypto.createIdentity();;
+    let newKey= ethCrypto.createIdentity();
     
     Log.d(this, "New Key Pair: " + newKey.publicKey + ", #######, " + newKey.privateKey)
     return [newKey.publicKey, newKey.privateKey]  // substring removed 0x
   }
 
   init(){
-    if (this. web3) {
+    if (this. web3 && this.sessionAccount) {
       Log.d(this, "Auth Service already Initialised")
       return true
     }
@@ -139,8 +139,6 @@ export class AuthService {
           }
           onLogin(false)
         })
-
-        
       }
     }
     return true;
@@ -219,8 +217,8 @@ export class AuthService {
     let msg = deeIdLoginSigSigned.uID + deeIdLoginSigSigned.deeID + deeIdLoginSigSigned.expirytime + deeIdLoginSigSigned.data;
 
     this.web3.eth.personal.ecRecover(msg, deeIdLoginSigSigned.signature, (error, address) => {
+      // TODO: Check smart contract here
       if (!error) {
-        // Check smart contract here
         this.deeIdLoginSigSigned = deeIdLoginSigSigned
         Log.i(this, "Successfully verified: " + address)
         callback(true);
@@ -229,6 +227,17 @@ export class AuthService {
         callback(false);
       }
     })
+  }
+
+  logOut(){
+    this.deeIdWsConnection = null;
+    this.deeIdSessionId = null
+    this.signature = null
+    this.sessionAccount = null
+    this.recieveduId = false;
+    this.deeIdLoginSig = new DeeIdLoginSig() 
+    this.deeIdLoginSigSigned = null;
+    this.init();
   }
 
 

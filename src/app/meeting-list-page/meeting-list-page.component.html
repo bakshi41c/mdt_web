@@ -1,13 +1,18 @@
+<div class="page-container">
+  <app-header></app-header>
+  <div class="page-body">
+    
+    <h3 id = "welcomeTitle" >Welcome {{staff.name}}!</h3>
+    <div>
+      <button (click)="newMeetingClicked()" type="button" id="btnNewMeeting" class="btn btn-primary">+ New meeting</button>
+    </div>
 
-<div>
-  <h1 id = "welcome_title" >Welcome {{staff.name}}!</h1>
-  <div>
-    <button (click)="newMeetingClicked()" type="button" id="btn_new_meeting" class="btn btn-primary">New meeting</button>
+    <h4 id = "upcomingMeetingTitle" >Upcoming Meetings</h4>
+    <hr>
+    <app-meeting-card *ngFor="let meeting of upcomingMeetings" (onStart) = "startMeeting($event)" (onJoin)="joinMeeting($event)" (onEdit) = "viewMeeting($event)" [meeting] = meeting></app-meeting-card>
+
+    <h4 id = "previousMeetingTitle" >Previous Meetings</h4>
+    <hr>
+    <app-meeting-card *ngFor="let meeting of pastMeetings" (onView) = "viewMeeting($event)" [historic] = "true" [meeting] = meeting></app-meeting-card>
   </div>
-  <h3 id = "welcome_title" >Upcoming Meeting</h3>
-  
-  <app-meeting-card *ngFor="let meeting of upcomingMeetings" (onStart) = "startMeeting($event)" (onJoin)="joinMeeting($event)" (onEdit) = "viewMeeting($event)" [meeting] = meeting></app-meeting-card>
-
-  <h3 id = "welcome_title" >Previous Meeting</h3>
-  <app-meeting-card *ngFor="let meeting of pastMeetings" (onView) = "viewMeeting($event)" [historic] = "true" [meeting] = meeting></app-meeting-card>
 </div>

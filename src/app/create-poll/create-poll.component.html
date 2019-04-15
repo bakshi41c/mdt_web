@@ -19,4 +19,4 @@
 <button type="button" (click)='addOption()' class="btn btn-outline-primary">+ Add</button>
 <small *ngIf="options.length < 2" id="optionHelp" class="form-text text-muted">You need at least two options</small>
 <br/>
-<button type="button" (click) = "onCreatePollClicked()" class="btn btn-primary">Create Poll</button>
+<button type="button" id="createBollBtn" (click) = "onCreatePollClicked()" class="btn btn-primary">Create Poll</button>

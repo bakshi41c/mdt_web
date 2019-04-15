@@ -63,13 +63,13 @@ export class EventCardComponent implements OnInit {
 
   ngOnInit() {
     this.event = this.eventStorageService.getEvent(this.eventId)
-    this.staffName = "#####";
-    this.patientName = "#####";
+    this.staffName = "☐☐☐☐☐☐";
+    this.patientName = "☐☐☐☐☐☐";
     this.render();
   }
 
   render(){
-    this.avatar = "/assets/images/avatar" + (this.event["by"].charCodeAt(0) % 5) + ".png"
+    this.avatar = "/assets/images/avatar" + (this.event["by"].charCodeAt(5) % 5) + ".png"
     if (!this.staffNameUpdated) this.updateStaffName();
 
     Log.d(this, "Rendering Event Card: " + this.event.type)

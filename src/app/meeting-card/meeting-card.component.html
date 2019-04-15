@@ -4,6 +4,7 @@
           <div class="row">
               <div class="col-md-7">
                   <h4 class="card-title">{{ meeting.title }}</h4>
+                  <div *ngIf="meetingAlreadyStarted && !historic" id="blinker"><i class="fa fa-circle text-danger Blink"></i> </div>
                   <p class="card-text">{{ meeting.description }}</p>
               </div>
               <div class="col-md-3">
@@ -22,7 +23,7 @@
             </div>
             <div class="col-md-2" *ngIf="!historic">
                 <button *ngIf="isHost && !meetingAlreadyStarted" type="button" (click) = "startBtnClicked()" class="btn btn-success meeting-action-btn" >Start</button>
-                <button *ngIf="!isHost || meetingAlreadyStarted" type="button" (click) = "joinBtnClicked()" class="btn btn-success meeting-action-btn" >Join</button>
+                <button *ngIf="!isHost || meetingAlreadyStarted" type="button" (click) = "joinBtnClicked()" class="btn btn-warning meeting-action-btn" >Join</button>
                 <button *ngIf="isHost" type="button" (click) = "editBtnClicked()" class="btn btn-secondary meeting-action-btn">Edit</button>
                 <button *ngIf="!isHost" type="button" (click) = "viewBtnClicked()" class="btn btn-secondary meeting-action-btn">View</button>
 

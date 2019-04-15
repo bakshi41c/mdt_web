@@ -1,0 +1,24 @@
+.card-slim {
+    height: 60px;
+}
+
+#staffNameLable {
+    font-size: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+    margin-top: -2px;
+}
+
+.avatar-slim {
+    vertical-align: middle;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    float: left;
+    margin-left: -5px;
+    margin-right: 10px;
+    margin-top: -5px;
+}
+
