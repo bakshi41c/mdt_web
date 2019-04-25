@@ -37,7 +37,10 @@
 #dateTimeLable {
   margin-top: 20px;
   margin-right: 20px;
+}
 
+#contractIdLable {
+  margin-top: 20px;
 }
 
 .action-btn-panel {

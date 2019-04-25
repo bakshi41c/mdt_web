@@ -18,7 +18,7 @@ export class AuthService {
   web3 : Web3 = null;
   deeIdWsConnection = null;
   deeIdServerAddress = "ws://127.0.0.1:5678/"
-  deeIdServerPublicAddress = "https://f6337031.ngrok.io" // TODO: Remove when deploying, only needed for development
+  deeIdServerPublicAddress = "https://ferme.serveo.net" // TODO: Remove when deploying, only needed for development
   deeIdSessionId = null
   signature = null
   sessionAccount : Account = null // This is the eth Account that gets setup when logged in, used mainly for singning for meetings

@@ -49,7 +49,6 @@
               <option *ngFor="let patient of getPatientsAsArray()" [ngValue]="patient._id" [selected]="patient._id == currentPatientDisucussion._id">{{patient.name}}</option>
             </select> -->
             <p>Actions: </p>
-            <br>
             <div class="btn-group btn-group-toggle" data-toggle="buttons">
               <label class="btn btn-primary" [ngClass]= "{'active' :  getCurrentSelectedActionAsString() === 'CREATE_POLL'}">
                 <input (click)="changeActionView('CREATE_POLL')" type="radio" name="action-menu" id="poll" autocomplete="off"> Create Poll
