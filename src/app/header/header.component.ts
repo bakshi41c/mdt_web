@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { Staff } from '../model';
+import { Log } from '../logger';
 
 @Component({
   selector: 'app-header',
@@ -16,7 +17,11 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit() {
     this.loggedInStaff = this.authService.getLoggedInStaff()
-    this.avatar = "/assets/images/avatar" + (this.loggedInStaff._id.charCodeAt(5) % 5) + ".png"
+    if (this.loggedInStaff){
+      this.avatar = "/assets/images/avatar" + (this.loggedInStaff._id.charCodeAt(5) % 5) + ".png"
+    } else {
+      Log.e(this, "Error getting logged in staff!")
+    }
 
   }
 

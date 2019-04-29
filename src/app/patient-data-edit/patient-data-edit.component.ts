@@ -19,6 +19,18 @@ export class PatientDataEditComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    if (!this.patient) {
+      Log.e(this, "patient missing in input! unable to render!")
+      this.patient = new Patient()
+      return;
+    }
+
+    if (!this.patientMeetingData) {
+      Log.e(this, "patient data missing in input! unable to render!")
+      this.patientMeetingData = new PatientMeetingData()
+      return;
+    }
+
     this.oldData = JSON.stringify(this.patientMeetingData)
   }
 

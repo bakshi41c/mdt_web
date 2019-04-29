@@ -25,6 +25,11 @@ export class MeetingListPageComponent implements OnInit {
   ngOnInit() {
     this.showMeetings();
     this.staff = this.authService.getLoggedInStaff()
+    if (!this.staff) {
+      Log.e(this, "Error getting logged in staff");
+      this.staff = new Staff()
+      return;
+    }
     this.eventStorageService.clearAll() // We clear any events that were there in the storage
   }
 

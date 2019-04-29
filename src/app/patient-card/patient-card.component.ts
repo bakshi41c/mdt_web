@@ -16,6 +16,12 @@ export class PatientCardComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    if (!this.patient || !this.discussedPatient) {
+      Log.e(this, "Patient missing in input! Unable to render");
+      this.discussedPatient = new Patient();
+      this.patient = new Patient();
+      return;
+    }
   }
 
   onDiscussClicked() {

@@ -24,6 +24,17 @@ export class MeetingCardComponent implements OnInit {
 
   ngOnInit() {
     this.loggedInStaff = this.authService.getLoggedInStaff();
+
+    if (!this.meeting){
+      Log.e(this, "Meeting is falsy, unable to render meeting card")
+      return;
+    }
+
+    if (!this.loggedInStaff){
+      Log.e(this, "Cannot fetch logged in staff, unable to render meeting card")
+      return;
+    }
+
     this.isHost = this.meeting.host === this.loggedInStaff._id;
     this.meetingAlreadyStarted = this.meeting.started;
     Log.ds(this, this.meeting)

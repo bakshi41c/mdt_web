@@ -87,6 +87,12 @@ export class MeetingHostPageComponent implements AfterViewInit {
     this.eventStorageService.clearAll() // We clear any events that were there in the storage
 
     this.loading = true;
+
+    if (this.activatedRoute.snapshot.url.length < 3){
+      Log.e(this, "Error parsing URL! URL doesn't have enough components, Unable to render!")
+      return;
+    }
+
     this.meetingId =  this.activatedRoute.snapshot.url[1].toString()
     this.hosting = this.activatedRoute.snapshot.url[2].toString() == 'host'
     Log.d(this, "Hosting meetingId: " + this.meetingId)
@@ -698,7 +704,7 @@ export class MeetingHostPageComponent implements AfterViewInit {
     joinEvent.content = content;
     joinEvent.meetingId = this.meetingId;
     joinEvent.type = EventType.JOIN;
-    joinEvent.refEvent = "join"
+    joinEvent.refEvent = this.meeting.startEventId;
 
     Log.d(this, "Sending Join Event...")
     // Send the join event

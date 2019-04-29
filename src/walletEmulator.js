@@ -7,13 +7,14 @@ const WebSocket = require('ws');
 var w3 = new Web3('HTTP://127.0.0.1:8545')
 
 // Put in the key that you want to sign in with [public/deeid, private]
-keys = ['0xa78e5bb6ff6a849e120985d32532e5067f262e19', '4811658F121192610584E514AAE203370AE902D698C0D0A3ABDF841CBB2EAB04']
+keys = ['0x418E285eBa1350719F232802CBa15d688a2A8e68', '0xdf11ecb66a235dfe7fce4564bf381ae5f765033c6f2cfa5fb8dfe9d3b6968ce6']
 
 var deeID = keys[0];
 pk = keys[1]
 
 // Put in the data shown in the QR code
-var data = "{\"type\":\"loginSig\",\"uID\":\"9aee8bd4-c300-4f6f-9f6e-aef9e42586b6\",\"wsURL\":\"http://localhost:5678/\",\"data\":\"0x8a77326512A41BFa9f584f7aE2f332f20B4b286E\"}" 
+var data = "{\"type\":\"loginSig\",\"uID\":\"1d0a4ae7-38de-4a31-b62c-406dfe67e374\",\"wsURL\":\"https://ferme.serveo.net\",\"data\":\"0x3bf5dA1546e112dfc1F919893c5707d7C2e2A6DB\"}"
+
 
 // Put in the URL of the server
 var wsURL = "http://localhost:5678/"

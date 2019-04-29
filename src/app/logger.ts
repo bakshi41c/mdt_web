@@ -85,9 +85,9 @@ export class Log {
 
     public test(){
         Log.d(this, "This is a debug message")
-        Log.i(this, "This is a debug message")
-        Log.w(this, "This is a debug message")
-        Log.e(this, "This is a debug message")
+        Log.i(this, "This is a info message")
+        Log.w(this, "This is a warning message")
+        Log.e(this, "This is a error message")
     
         Log.ds(this, {a: "AAA", b: "BBB"})
         Log.dr(this, {a: "AAA", b: "BBB"})

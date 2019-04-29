@@ -12,10 +12,15 @@ export class StaffCardComponent implements OnInit {
 
   constructor(private mdtServerService : MdtServerService) { }
 
-  @Input() staffId : string;
+  @Input() staffId : string = "";
   staffName = "☐☐☐☐☐☐"
   avatar = "/assets/images/avatar3"
   ngOnInit() {
+    if (!this.staffId){
+      Log.e(this, "Missing staffId in input");
+      return;
+    }
+
     this.avatar = "/assets/images/avatar" + (this.staffId.charCodeAt(5) % 5) + ".png"
 
     this.mdtServerService.getStaff(this.staffId).subscribe((data) => {

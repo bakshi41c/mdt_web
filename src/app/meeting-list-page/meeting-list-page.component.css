@@ -20,3 +20,8 @@
     float: right;
     margin-top: -20px;
 }
+
+.empty-list-text{
+    color: lightgray;
+    text-align: center;
+}

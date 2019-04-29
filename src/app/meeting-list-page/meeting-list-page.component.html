@@ -9,10 +9,12 @@
 
     <h4 id = "upcomingMeetingTitle" >Upcoming Meetings</h4>
     <hr>
+    <p id="emptyUpcomingMessage" *ngIf="upcomingMeetings.length === 0" class="empty-list-text" >No upcoming meetings</p>
     <app-meeting-card *ngFor="let meeting of upcomingMeetings" (onStart) = "startMeeting($event)" (onJoin)="joinMeeting($event)" (onEdit) = "viewMeeting($event)" [meeting] = meeting></app-meeting-card>
 
     <h4 id = "previousMeetingTitle" >Previous Meetings</h4>
     <hr>
+    <p id="emptyPastMessage" *ngIf="pastMeetings.length === 0" class="empty-list-text" >No past meetings</p>
     <app-meeting-card *ngFor="let meeting of pastMeetings" (onView) = "viewMeeting($event)" [historic] = "true" [meeting] = meeting></app-meeting-card>
   </div>
 </div>

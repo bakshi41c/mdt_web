@@ -7,6 +7,7 @@ export class Meeting {
     title: string = "Untitled meeting"
     description : string = "No description"
     contractId : string = ""
+    startEventId : string = ""
     host : string = "";
     started : boolean = false;
     ended : boolean = false;
@@ -25,6 +26,7 @@ export class Meeting {
         meeting.started = object.started
         meeting.ended = object.ended
         meeting.contractId = object.contractId
+        meeting.startEventId = object.startEventId
         return meeting
     }
 }

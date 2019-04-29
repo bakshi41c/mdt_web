@@ -87,8 +87,19 @@ export class MeetingPageComponent implements OnInit {
   ngOnInit() {
     this.loading = true;
     Log.dr(this, this.activatedRoute.snapshot)
+
+    if (this.activatedRoute.snapshot.url.length < 2){
+      Log.e(this, "Error parsing URL! URL doesn't have enough components, Unable to render!")
+      return;
+    }
+
     let urlComponent = this.activatedRoute.snapshot.url[1].toString()
     this.loggedInStaff = this.authService.getLoggedInStaff()
+
+    if (!this.loggedInStaff){
+      Log.e(this, "Error getting logged in staff! unable to render")
+      return;
+    }
 
     this.newMeeting = urlComponent === "create";
 
