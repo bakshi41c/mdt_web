@@ -27,7 +27,10 @@
               "node_modules/bootstrap/dist/css/bootstrap.css",
               "node_modules/font-awesome/css/font-awesome.css"
             ],
-            "scripts": [],
+            "scripts": [
+              "node_modules/qrious/dist/qrious.js",
+              "node_modules/bencode-js/bencode.js"
+            ],
             "es5BrowserSupport": true
           },
           "configurations": {

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Meeting, Staff, Patient, DeeIdLoginSigSigned } from './model';
 import { Log } from './logger';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -10,9 +11,8 @@ export class MdtServerService {
 
   constructor(private http: HttpClient) { }
 
-  private serverIP = "localhost"
-  private serverPort = "51234"
-  private serverUrl = "http://" + this.serverIP + ":" + this.serverPort
+
+  private serverUrl = environment.restServerAddress;
   private ALL_MEETING_URL = this.serverUrl + "/meetings"
   private MEETING_URL = this.serverUrl + "/meeting"
   private ALL_STAFF_URL = this.serverUrl + "/staff"

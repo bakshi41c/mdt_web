@@ -2,11 +2,13 @@ import { Injectable } from '@angular/core';
 import { MeetingEvent, Staff, Meeting, EventType, DeeIdLoginSig, DeeIdUId, DeeIdLoginSigSigned } from './model';
 import { MdtServerService } from './mdt-server.service';
 import { Log } from './logger';
-import * as bencodejs from 'bencode-js'
 import * as jssha256 from 'js-sha256'
+declare var bencodejs:any;
 import Web3 from 'web3';
 import ethCrypto from 'eth-crypto';
 import { Account } from 'web3-eth-accounts/types';
+import { environment } from '../environments/environment';
+
 
 @Injectable({
   providedIn: 'root'
@@ -17,12 +19,12 @@ export class AuthService {
   staff : Staff = null;
   web3 : Web3 = null;
   deeIdWsConnection = null;
-  deeIdServerAddress = "ws://127.0.0.1:5678/"
-  deeIdServerPublicAddress = "https://ferme.serveo.net" // TODO: Remove when deploying, only needed for development
+  deeIdServerAddress = environment.deeIdServerAddress;
+  serverPublicEthAddress = environment.serverPublicEthAddress;
+  
   deeIdSessionId = null
   signature = null
   sessionAccount : Account = null // This is the eth Account that gets setup when logged in, used mainly for singning for meetings
-  serverPublicAddress : string = '0x1c0b2f7a73ecbf7ce694887020dbcbaaa2e126f7'
   recieveduId = false;
   deeIdLoginSig = new DeeIdLoginSig() // declaring it here so we can access it larer
   deeIdLoginSigSigned : DeeIdLoginSigSigned; // declaring it here so we can access it later
@@ -106,7 +108,7 @@ export class AuthService {
 
           // Generate a new LoginSIg object that the user can sign
           this.deeIdLoginSig.uID = uid;
-          this.deeIdLoginSig.wsURL = this.deeIdServerPublicAddress
+          this.deeIdLoginSig.wsURL = this.deeIdServerAddress
           this.deeIdLoginSig.data = this.sessionAccount.address
           let qrData = JSON.stringify(this.deeIdLoginSig)
           onQRCodeCallback(qrData)
@@ -176,7 +178,7 @@ export class AuthService {
   // }
 
   verifyServerSignature(event: MeetingEvent, callback: Function) {
-    return this.verifySignature(event, this.serverPublicAddress, callback)
+    return this.verifySignature(event, this.serverPublicEthAddress, callback)
   }
 
   verifySignature(event: MeetingEvent, verificationAddress : string, callback: Function) {

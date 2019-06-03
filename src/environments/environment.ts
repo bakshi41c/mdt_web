@@ -3,7 +3,19 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  
+  // REST API server address
+  restServerAddress: "http://localhost:51234",
+
+  // Meeting WebSocket Server address
+  meetingServerAddress: "http://localhost:51235",
+
+  // DeeID Server 
+  deeIdServerAddress: "ws://deeid.uksouth.azurecontainer.io:5678",
+
+  // Server Ethereum Address - Hardcoded
+  serverPublicEthAddress: '0x1c0b2f7a73ecbf7ce694887020dbcbaaa2e126f7'
 };
 
 /*

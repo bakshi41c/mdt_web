@@ -3,7 +3,7 @@ import { AuthService } from '../auth.service';
 import { Staff } from '../model';
 import { Log } from '../logger';
 import { Router } from '@angular/router';
-import * as QRious from 'QRious'
+declare var QRious:any;
 
 @Component({
   selector: 'app-login-page',

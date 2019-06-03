@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import * as io from 'socket.io-client';
 import { MeetingEvent, Meeting, EventType, StartContent, JoinContent } from './model';
 import { Log } from './logger';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -14,9 +15,7 @@ export class MdtServerWsService {
 
   constructor() { }
 
-  private serverIP = "localhost"
-  private serverPort = "51235"
-  private wsUrl = "http://" + this.serverIP + ":" + this.serverPort
+  private wsUrl = environment.meetingServerAddress;
   private roomMessageEvent = "room-message"
 
   connect(){
