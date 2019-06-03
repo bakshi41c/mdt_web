@@ -25,6 +25,9 @@ export class MdtServerWsService {
   }
 
   disconnect(){
+    Log.d(this, "Disconnecting Socket...")
+    this.socket.removeAllListeners(this.roomMessageEvent);
+    this.socket.disconnect()
     this.socket = null;
   }
 
@@ -48,6 +51,11 @@ export class MdtServerWsService {
           // check sig
           observer.next(data)
       });
+      this.socket.on(this.roomMessageEvent, (data: MeetingEvent) => {
+        // check validity
+        // check sig
+        observer.next(data)
+    });
     });
   }
 }

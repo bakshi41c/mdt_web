@@ -9,6 +9,7 @@ import { ActivatedRoute } from "@angular/router"
 import { Router } from '@angular/router';
 
 import { Log } from '../logger';
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-meeting-host-page',
@@ -24,6 +25,7 @@ export class MeetingHostPageComponent implements AfterViewInit, OnDestroy {
   patients: any = {}; // Local cache for all patients in this meeting - dictionary for O(1) access 
   patientList: Patient[] = []; // Patients we are displaying for user, angular is not happy with object (patients)
   joinedStaff= new Set() // Set of participant who are currently in meeting
+  wsListener: Subscription;
 
   showPatientChangeSelect: boolean = false; // Used to determine when to show the dropdown for patient select
   eventIds = new Set(); // Events we are displaying
@@ -128,7 +130,7 @@ export class MeetingHostPageComponent implements AfterViewInit, OnDestroy {
   }
 
   setupWebSocketListener() {
-    this.mdtWsServer.getMeetingEventListener().subscribe(
+    this.wsListener = this.mdtWsServer.getMeetingEventListener().subscribe(
       (eventJson) => {
         let event : MeetingEvent = JSON.parse(eventJson)
 
@@ -802,7 +804,8 @@ export class MeetingHostPageComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.mdtWsServer.disconnect()
+    this.mdtWsServer.disconnect();
+    this.wsListener.unsubscribe();
   }
 
   // Fetch info about all patients and cache them
