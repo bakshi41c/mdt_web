@@ -33,7 +33,7 @@ export class EventsStorageService {
   }
 
   storeEvent(event : MeetingEvent) {
-    Log.w(this, "Storing event " + event._id)
+    Log.w(this, "Storing event " + "[" + event.type + "]: " + event._id)
     this.events[event._id] = event;
     this.lastEventId = event._id;
   }

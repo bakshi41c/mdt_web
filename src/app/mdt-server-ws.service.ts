@@ -24,6 +24,10 @@ export class MdtServerWsService {
     }
   }
 
+  disconnect(){
+    this.socket = null;
+  }
+
   sendMeetingEvent(event: MeetingEvent, respCallback: Function){
     if (!this.socket){
       this.connect()

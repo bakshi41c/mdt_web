@@ -3,7 +3,7 @@ import { MeetingEvent, Staff, Meeting, EventType, DeeIdLoginSig, DeeIdUId, DeeId
 import { MdtServerService } from './mdt-server.service';
 import { Log } from './logger';
 import * as jssha256 from 'js-sha256'
-declare var bencodejs:any;
+declare var Bencode:any;
 import Web3 from 'web3';
 import ethCrypto from 'eth-crypto';
 import { Account } from 'web3-eth-accounts/types';
@@ -152,7 +152,7 @@ export class AuthService {
     let eventCopy = JSON.parse(eventJson);
     delete eventCopy._id;
     delete eventCopy.__proto__;
-    let eventBencode = bencodejs.encode(eventCopy)
+    let eventBencode = Bencode.encode(eventCopy)
     let signature = this.sessionAccount.sign(eventBencode)
     event._id = signature.signature;
     return event
@@ -187,7 +187,7 @@ export class AuthService {
     let signature = eventCopy._id
     delete eventCopy._id;
     
-    let eventBencode = bencodejs.encode(eventCopy)
+    let eventBencode = Bencode.encode(eventCopy)
     this.web3.eth.personal.ecRecover(eventBencode, signature, (error, address) => {
       if (!error) {
         callback(verificationAddress.toLowerCase() === address.toLowerCase())

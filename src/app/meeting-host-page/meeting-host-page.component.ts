@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, ViewChildren, QueryList } from '@angular/core';
+import { Component, AfterViewInit, ViewChildren, QueryList, OnDestroy } from '@angular/core';
 import { Meeting, Patient, MeetingEvent, EventType, EventAction, StartContent, EventStreamError, JoinContent, CommentContent, PatientMeetingData, ReplyContent, PollContent, PatientDataChangeContent, VoteContent, DiscussionContent, AckJoinContent, AckErrorContent, AckPollEndContent, PollEndContent } from '../model';
 import { MdtServerWsService } from '../mdt-server-ws.service';
 import { PollResultsComponent } from '../poll-results/poll-results.component';
@@ -15,7 +15,7 @@ import { Log } from '../logger';
   templateUrl: './meeting-host-page.component.html',
   styleUrls: ['./meeting-host-page.component.css']
 })
-export class MeetingHostPageComponent implements AfterViewInit {
+export class MeetingHostPageComponent implements AfterViewInit, OnDestroy {
   meetingId: string = "";
   meeting: Meeting;
   loading: boolean = true;
@@ -433,7 +433,7 @@ export class MeetingHostPageComponent implements AfterViewInit {
   // Sends Event using the mdtWsServer service
   // Automatically timestamps, signs and puts the correct 'by' field
   sendEvent(event, callback : Function){
-    Log.i(this, "Sending Event: ");
+    Log.i(this, "Sending Event " + "[" + event.type + "]: ");
     Log.ds(this, event)
     event.timestamp = this.getUnixTimetstamp();
     this.authService.signEvent(event)
@@ -672,6 +672,7 @@ export class MeetingHostPageComponent implements AfterViewInit {
       if (ok) {
         this.otp = content.otp
         Log.i(this, "Started Meeting Succesfully")
+        this.meeting.startEventId = startEvent._id; // Store the start event id for joining the meeting session
         this.join()
       } else {
         let ac = ackEvent.content as AckErrorContent
@@ -798,6 +799,10 @@ export class MeetingHostPageComponent implements AfterViewInit {
 
   getUnixTimetstamp() {
     return Math.round((new Date()).getTime() / 1000);
+  }
+
+  ngOnDestroy() {
+    this.mdtWsServer.disconnect()
   }
 
   // Fetch info about all patients and cache them
