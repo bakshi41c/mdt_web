@@ -34,7 +34,7 @@ export class MeetingHostPageComponent implements AfterViewInit, OnDestroy {
   hosting = false;  // Whether the user is hosting or joining (NOTE: a host can also join, e.g. page refresh)
   isHost = false; // Whether the user thats logged in is the host of the meeting
   manuallyLeftMeeting = false; // The meeting guard will check this flag to decide whether to prmpt user for leaving
-
+  
   // Events that can't be displayed like ACKS
   undisplayableEvents = [EventType.ACK, EventType.ACK_END, EventType.ACK_ERR, EventType.ACK_JOIN, EventType.ACK_POLL_END]
 

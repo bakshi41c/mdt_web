@@ -16,24 +16,15 @@
   box-shadow: inset 0px 0px 3px 0px rgba(0,0,0,0.46);
 }
 
-#patientCards {
+.entityCard {
   width:auto;
   overflow-y: auto;
   height: 32vh;
   padding: 10px;
-  -webkit-box-shadow: inset 0px 0px 3px 0px rgba(0,0,0,0.46);
-  -moz-box-shadow: inset 0px 0px 3px 0px rgba(0,0,0,0.46);
-  box-shadow: inset 0px 0px 3px 0px rgba(0,0,0,0.46);
-}
-
-#staffCards {
-  width:auto;
-  overflow-y: auto;
-  height: 30vh;
-  padding: 10px;
-  -webkit-box-shadow: inset 0px 0px 3px 0px rgba(0,0,0,0.46);
-  -moz-box-shadow: inset 0px 0px 3px 0px rgba(0,0,0,0.46);
-  box-shadow: inset 0px 0px 3px 0px rgba(0,0,0,0.46);
+  -webkit-box-shadow: inset 0px -11px 30px -23px rgba(0,0,0,0.81);
+  -moz-box-shadow: inset 0px -11px 30px -23px rgba(0,0,0,0.81);
+  box-shadow: inset 0px -11px 30px -23px rgba(0,0,0,0.81);
+  border:1px solid #ccc;
 }
 
 #blinkerLable {

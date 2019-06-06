@@ -21,72 +21,82 @@
     <div class="container">
       <div class="row">
         <div class="col-md-3" >
-            <p>Patients:</p>
-            <div id= "patientCards" class="container">
+            <p>Patients: ({{patientList.length}})</p>
+            <div id= "patientCards" class="container entityCard">
                 <app-patient-card *ngFor="let patient of patientList" 
                                   [patient]= "patient" 
                                   [discussedPatient] = "currentPatientDisucussion"
                                   (onDiscuss)="pdiscussionChange($event)"></app-patient-card>
             </div>
             <br>
-            <p>Current Participants:</p>
-            <div id= "staffCards" class="container">
+            <p>Current Participants: ({{joinedStaff.size}} out of {{meeting.staff.length}})</p>
+            <div id= "staffCards" class="container entityCard">
                 <app-staff-card *ngFor="let staffId of joinedStaff" 
                                   [staffId]= "staffId"></app-staff-card>
             </div>
         </div>
-        <div class="col-md-6" >
-            <div id= "eventStream" class="container" #scrollMe [scrollTop]="scrollMe.scrollHeight">
-              <app-event-card (onAction)="onEventCardAction($event)" *ngFor="let eventId of eventIds" [eventId]="eventId"></app-event-card>
-            </div>
-        </div>
-        <div class="col-md-3" >
-          <div id="stream_menu">
-            <!-- <label>Patient being discussed:</label>&nbsp;
-            <label>{{currentPatientDisucussion.name}}</label>
-            <button *ngIf="!showPatientChangeSelect" (click)="showPatientChangeSelect=true" type="button" class="btn btn-link">Change</button>
-            <select ngModel (ngModelChange)="pdiscussionChange($event)" *ngIf="showPatientChangeSelect" class="form-control" id="patientSelect">
-              <option *ngFor="let patient of getPatientsAsArray()" [ngValue]="patient._id" [selected]="patient._id == currentPatientDisucussion._id">{{patient.name}}</option>
-            </select> -->
-            <p>Actions: </p>
-            <div class="btn-group btn-group-toggle" data-toggle="buttons">
-              <label class="btn btn-primary" [ngClass]= "{'active' :  getCurrentSelectedActionAsString() === 'CREATE_POLL'}">
-                <input (click)="changeActionView('CREATE_POLL')" type="radio" name="action-menu" id="poll" autocomplete="off"> Create Poll
-              </label>
-              <label class="btn btn-primary" [ngClass]= "{'active' :  getCurrentSelectedActionAsString() === 'COMMENT'}">
-                <input (click)="changeActionView('COMMENT')" type="radio" name="action-menu" id="comment" autocomplete="off"> Comment
-              </label>
-              <label class="btn btn-primary" [ngClass]= "{'active' :  getCurrentSelectedActionAsString() === 'PDC'}">
-                <input (click)="changeActionView('PDC')" type="radio" name="action-menu" id="pd" autocomplete="off"> Patient Details
-              </label>
-            </div>
-            <app-create-poll *ngIf=" getCurrentSelectedActionAsString() === 'CREATE_POLL'"
-                              [patients]="patients"
-                              [currentPatientDisucussion]="currentPatientDisucussion"
-                              (createPollBtnClicked)="createPollBtnClicked($event)">
-            </app-create-poll>
-            <app-comment-reply *ngIf=" getCurrentSelectedActionAsString() === 'COMMENT' ||  getCurrentSelectedActionAsString() === 'REPLY'"
-                                [isReply]="actionPanelConfig.commentReplyPanel.isReply" 
-                                [replyTo]="actionPanelConfig.commentReplyPanel.replyTo"
-                                [patients]="patients"
-                                [currentPatientDisucussion]="currentPatientDisucussion"
-                                (commentBtnClicked)="commentBtnClicked($event)">
-            </app-comment-reply>
-            <app-patient-data-edit *ngIf=" getCurrentSelectedActionAsString() === 'PDC'"
-                                [patient]="currentPatientDisucussion"
-                                [patientMeetingData]="actionPanelConfig.patientMeetingEditPanel.patientMeetingData"
-                                (saveBtnClicked)="patientDataSaveBtnClicked($event)">
+        <div class="col-md-4" >
+            <div id="stream_menu">
+                <!-- <label>Patient being discussed:</label>&nbsp;
+                <label>{{currentPatientDisucussion.name}}</label>
+                <button *ngIf="!showPatientChangeSelect" (click)="showPatientChangeSelect=true" type="button" class="btn btn-link">Change</button>
+                <select ngModel (ngModelChange)="pdiscussionChange($event)" *ngIf="showPatientChangeSelect" class="form-control" id="patientSelect">
+                  <option *ngFor="let patient of getPatientsAsArray()" [ngValue]="patient._id" [selected]="patient._id == currentPatientDisucussion._id">{{patient.name}}</option>
+                </select> -->
+                <p>Actions: </p>
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                  <label class="btn btn-primary btn-sm" [ngClass]= "{'active' :  getCurrentSelectedActionAsString() === 'CREATE_POLL'}">
+                    <input (click)="changeActionView('CREATE_POLL')" type="radio" name="action-menu" id="poll" autocomplete="off"> Create Poll
+                  </label>
+                  <label class="btn btn-primary btn-sm" [ngClass]= "{'active' :  getCurrentSelectedActionAsString() === 'COMMENT'}">
+                    <input (click)="changeActionView('COMMENT')" type="radio" name="action-menu" id="comment" autocomplete="off"> Comment
+                  </label>
+                  <label class="btn btn-primary btn-sm" [ngClass]= "{'active' :  getCurrentSelectedActionAsString() === 'PDC'}">
+                    <input (click)="changeActionView('PDC')" type="radio" name="action-menu" id="pd" autocomplete="off"> Patient Details
+                  </label>
+                </div>
+                <app-create-poll *ngIf=" getCurrentSelectedActionAsString() === 'CREATE_POLL'"
+                                  [patients]="patients"
+                                  [currentPatientDisucussion]="currentPatientDisucussion"
+                                  (createPollBtnClicked)="createPollBtnClicked($event)">
+                </app-create-poll>
+                <app-comment-reply *ngIf=" getCurrentSelectedActionAsString() === 'COMMENT' ||  getCurrentSelectedActionAsString() === 'REPLY'"
+                                    [isReply]="actionPanelConfig.commentReplyPanel.isReply" 
+                                    [replyTo]="actionPanelConfig.commentReplyPanel.replyTo"
+                                    [patients]="patients"
+                                    [currentPatientDisucussion]="currentPatientDisucussion"
+                                    (commentBtnClicked)="commentBtnClicked($event)">
+                </app-comment-reply>
+                <app-patient-data-edit *ngIf=" getCurrentSelectedActionAsString() === 'PDC'"
+                                    [patient]="currentPatientDisucussion"
+                                    [patientMeetingData]="actionPanelConfig.patientMeetingEditPanel.patientMeetingData"
+                                    (saveBtnClicked)="patientDataSaveBtnClicked($event)">
+                </app-patient-data-edit>
+                <app-poll-results *ngIf=" getCurrentSelectedActionAsString() === 'VIEW_RESULTS'"
+                                    #pollResultPanel 
+                                    [results]="actionPanelConfig.pollResultsPanel.results"
+                                    [question]="actionPanelConfig.pollResultsPanel.question">
+                </app-poll-results>
+                <app-poll-vote *ngIf=" getCurrentSelectedActionAsString() === 'VOTE'"
+                                    [question]="actionPanelConfig.votePanel.question"
+                                    [options]="actionPanelConfig.votePanel.options"
+                                    (voteButtonClicked)="voteButtonClicked($event)">
+                </app-poll-vote>
+              </div> 
+              <!-- end of actions -->
+
+            <!-- Patient Info and Meeting Info -->
+            <app-patient-data-edit
+            [patient]="currentPatientDisucussion"
+            [patientMeetingData]="actionPanelConfig.patientMeetingEditPanel.patientMeetingData"
+            (saveBtnClicked)="patientDataSaveBtnClicked($event)">
             </app-patient-data-edit>
-            <app-poll-results *ngIf=" getCurrentSelectedActionAsString() === 'VIEW_RESULTS'"
-                                #pollResultPanel 
-                                [results]="actionPanelConfig.pollResultsPanel.results"
-                                [question]="actionPanelConfig.pollResultsPanel.question">
-            </app-poll-results>
-            <app-poll-vote *ngIf=" getCurrentSelectedActionAsString() === 'VOTE'"
-                                [question]="actionPanelConfig.votePanel.question"
-                                [options]="actionPanelConfig.votePanel.options"
-                                (voteButtonClicked)="voteButtonClicked($event)">
-            </app-poll-vote>
+            <!-- end of Patient Info and Meeting Info -->
+
+        </div>
+        <div class="col-md-" >
+          <div id= "eventStream" class="container" #scrollMe [scrollTop]="scrollMe.scrollHeight">
+              <app-event-card (onAction)="onEventCardAction($event)" *ngFor="let eventId of eventIds" [eventId]="eventId"></app-event-card>
           </div>
         </div>
       </div>

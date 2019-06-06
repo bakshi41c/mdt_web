@@ -35,23 +35,14 @@
   </div>
   
   <div class="tab-pane fade active show" *ngIf="showPatientDetails">
-      <label class="control-label" for="patientId">Id:</label>
-      <input disabled class="form-control" id="patientId" type="text" placeholder="{{patient._id}}">
-      <br/>
-      <label class="control-label" for="patientName">Name:</label>
-      <input disabled class="form-control" id="patientName" type="text" placeholder="{{patient.name}}">
-      <br/>
-      <label class="control-label" for="patientDob">DOB:</label>
-      <input disabled class="form-control" id="patientDob" type="text" placeholder="{{patient.dob}}">
-      <br/>
-      <label class="control-label" for="patientAge">Age:&nbsp;</label>
-      <input disabled class="form-control" id="patientAge" type="text" placeholder="{{patient.age}}">
-      <br/>
-      <label class="control-label" for="patientHn">Hospital No:</label>
-      <input disabled class="form-control" id="patientHn" type="text" placeholder="{{patient.hospitalNumber}}">
-      <br/>
-      <label class="control-label" for="patientIffLink">Infoflex Link:&nbsp;</label>
-      <a id="patientIffLink" type="text" href="{{patient.infoflexLink}}">{{patient.infoflexLink}}</a>
+    <ul class="list-group">
+      <li class="list-group-item">Id: {{patient._id}}</li>
+      <li class="list-group-item">Name: {{patient.name}}</li>
+      <li class="list-group-item">DOB: {{patient.dob}}</li>
+      <li class="list-group-item">Age:&nbsp; {{patient.age}}</li>
+      <li class="list-group-item">Hospital No: {{patient.hospitalNumber}}</li>
+      <li class="list-group-item">Infoflex Link:&nbsp; {{patient.infoflexLink}}</li>
+    </ul>
   </div>
 
 </div>

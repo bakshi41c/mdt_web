@@ -3,6 +3,7 @@
 @import "~ngx-smart-modal/ngx-smart-modal";
 @import "app/app.component";
 
+
 .nsm-dialog{
     max-width: none !important;
 }
